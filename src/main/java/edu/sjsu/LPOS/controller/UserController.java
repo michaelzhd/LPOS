@@ -19,7 +19,7 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	@RequestMapping(value = "", method = RequestMethod.POST)
+	@RequestMapping(value = "register", method = RequestMethod.POST)
 	public ResponseEntity<User> createUser(@RequestBody User user) {
 		userService.saveUser(user);
 		return new ResponseEntity<User>(HttpStatus.OK);

@@ -29,8 +29,7 @@ public class HttpBasicFilter extends UsernamePasswordAuthenticationFilter {
 	
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

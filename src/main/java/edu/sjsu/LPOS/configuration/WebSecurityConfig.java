@@ -22,8 +22,8 @@ import edu.sjsu.LPOS.auth.JwtAuthorizationFilter;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableGlobalMethodSecurity(securedEnabled = true)
 @EnableTransactionManagement
-
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Autowired
 	private UserDetailsService userDetailsService;
@@ -90,7 +90,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
         //JWT based authentication
         httpSecurity
-        		.addFilterBefore(jwtFilterRegistrationBean(), UsernamePasswordAuthenticationFilter.class)
+        		.addFilterBefore(httpBasicFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilterRegistrationBean(), UsernamePasswordAuthenticationFilter.class);
     }
 
