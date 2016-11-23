@@ -22,7 +22,7 @@ public class RestaurantLocationController {
 	@Autowired
 	private RestaurantLocationService restaurantLocationService;
 	
-	@PreAuthorize("hasRole('USER')")
+//	@PreAuthorize("hasRole('USER')")
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	public ResponseEntity<RestaurantLocation> getRestaurantLocationById(@PathVariable("id") long id) {
 		RestaurantLocation restaurantLocation = restaurantLocationService.findRestaurantById(id);
@@ -30,7 +30,7 @@ public class RestaurantLocationController {
 		return new ResponseEntity<RestaurantLocation>(restaurantLocation, HttpStatus.OK);
 	}
 	
-	@PreAuthorize("hasRole('ADMIN')")
+//	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value="", method=RequestMethod.GET)
 	public ResponseEntity<List<RestaurantLocation>> getAllRestaurantLocations() {
 		List<RestaurantLocation> restaurantLocations = restaurantLocationService.findAllRestaurant();
