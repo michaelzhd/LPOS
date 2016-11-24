@@ -1,13 +1,19 @@
 package edu.sjsu.LPOS.domain;
 
+import java.util.List;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "user")
+@Table(name = "appuser")
 public class User {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,8 +21,19 @@ public class User {
 
     private String username;
     private String password;
-    private String authorities;
-    private String email;
+    
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "USER_AUTHORITY",
+            joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
+            inverseJoinColumns = {@JoinColumn(name = "AUTHORITY_ID", referencedColumnName = "ID")})
+    private List<Authority> authorities;
+    @Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", password=" + password + ", authorities=" + authorities
+				+ ", email=" + email + ", phonenumber=" + phonenumber + "]";
+	}
+	private String email;
     private String phonenumber;
 
     public User() {
@@ -41,10 +58,11 @@ public class User {
 		this.password = password;
 	}
 
-	public String getAuthorities() {
+
+	public List<Authority> getAuthorities() {
 		return authorities;
 	}
-	public void setAuthorities(String authorities) {
+	public void setAuthorities(List<Authority> authorities) {
 		this.authorities = authorities;
 	}
 	public String getEmail() {

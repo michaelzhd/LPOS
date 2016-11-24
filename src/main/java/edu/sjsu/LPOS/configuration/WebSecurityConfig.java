@@ -1,5 +1,8 @@
 package edu.sjsu.LPOS.configuration;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,22 +18,26 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import edu.sjsu.LPOS.auth.Audience;
-import edu.sjsu.LPOS.auth.HttpBasicFilter;
-import edu.sjsu.LPOS.auth.JwtAuthorizationFilter;
+
+import edu.sjsu.LPOS.auth.login.LoginAuthenticationProvider;
+import edu.sjsu.LPOS.auth.login.LoginBasicFilter;
+import edu.sjsu.LPOS.auth.token.JwtAuthorizationFilter;
+import edu.sjsu.LPOS.auth.token.SkipPathRequestMatcher;
+import edu.sjsu.LPOS.auth.token.TokenAuthenticationProvider;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-//@EnableGlobalMethodSecurity(securedEnabled = true)
 @EnableTransactionManagement
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
-	@Autowired
-	private UserDetailsService userDetailsService;
 	
-//	@Autowired
-//	private AuthenticationEntryPoint authenticationEntryPoint;
+	public static final String LOGIN_ENTRY_POINT = "/auth/login";
+	public static final String REFRESH_ENTRY_POINT = "/auth/refresh";
 	
+	@Autowired LoginAuthenticationProvider loginAuthenticationProvider;
+	@Autowired TokenAuthenticationProvider tokenAuthenticationProvider;
+	@Autowired UserDetailsService userDetailsService;
+	@Autowired AuthenticationManager authenticationManager;
 	
 	@Autowired
 	public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -46,30 +53,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     }
 	
     @Bean
-    public static Audience getAudience() throws Exception{
-    	Audience audience = new Audience();
-    	audience.setClientId("098f6bcd4621d373cade4e832627b4f6");
-    	audience.setClientName("restapiuser");
-    	audience.setClientSecret("MDk4ZjZiY2Q0NjIxZDM3M2NhZGU0ZTgzMjYyN2I0ZjY");
-    	audience.setExpiresInSeconds(172800);
-    	return audience;
-    }
-    
-    @Bean
-    public HttpBasicFilter httpBasicFilter() throws Exception {
-    	HttpBasicFilter filter = new HttpBasicFilter();
-    	filter.setAuthenticationManager(super.authenticationManagerBean());
+    public LoginBasicFilter loginBasicFilter() throws Exception {
+    	LoginBasicFilter filter = new LoginBasicFilter(LOGIN_ENTRY_POINT);
+    	filter.setAuthenticationManager(this.authenticationManager);
     	return filter;
     }
     
     @Bean
     public JwtAuthorizationFilter jwtFilterRegistrationBean() throws Exception {
-    	JwtAuthorizationFilter filter = new JwtAuthorizationFilter();
-    	filter.setAuthenticationManager(super.authenticationManagerBean());
+    	List<String> pathToSkip = Arrays.asList(LOGIN_ENTRY_POINT,REFRESH_ENTRY_POINT);
+    	SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathToSkip);
+    	JwtAuthorizationFilter filter = new JwtAuthorizationFilter(matcher);
+    	filter.setAuthenticationManager(this.authenticationManager);
         return filter;
     }
 
-    
+    protected void configure(AuthenticationManagerBuilder auth) {
+    	auth.authenticationProvider(loginAuthenticationProvider);
+    	auth.authenticationProvider(tokenAuthenticationProvider);
+    }
     
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -83,14 +85,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .and()
                 .antMatcher("/**")
                 	.authorizeRequests()
-//                	.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/auth/**").permitAll()
-//                .antMatchers("/user/**").permitAll()
+                		.antMatchers(LOGIN_ENTRY_POINT).permitAll()
+                		.antMatchers(REFRESH_ENTRY_POINT).permitAll()
                 .anyRequest().authenticated();
 
         //JWT based authentication
         httpSecurity
-        		.addFilterBefore(httpBasicFilter(), UsernamePasswordAuthenticationFilter.class)
+        		.addFilterBefore(loginBasicFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilterRegistrationBean(), UsernamePasswordAuthenticationFilter.class);
     }
 

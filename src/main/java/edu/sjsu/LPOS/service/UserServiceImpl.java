@@ -32,9 +32,7 @@ public class UserServiceImpl implements UserService {
 	public User saveUser(User user) {
 		String digestedPassword = EncryptionUtil.digestWithMD5(user.getPassword());
 		user.setPassword(digestedPassword);
-		if (user.getAuthorities() == null) {
-			user.setAuthorities("USER");
-		}
+
 		return userRepository.save(user);
 	}
 
