@@ -8,6 +8,7 @@ edu/sjsu/LPOS/auth/token/JwtAuthorizationFilter.class
 edu/sjsu/LPOS/service/UserService.class
 edu/sjsu/LPOS/service/UserServiceImpl.class
 edu/sjsu/LPOS/auth/login/LoginAuthenticationSuccessHandler.class
+edu/sjsu/LPOS/auth/AuthResponse.class
 edu/sjsu/LPOS/auth/UserAuthorities.class
 edu/sjsu/LPOS/configuration/WebConfig.class
 edu/sjsu/LPOS/domain/AuthorityName.class
@@ -23,7 +24,6 @@ edu/sjsu/LPOS/configuration/RepositoryConfig.class
 edu/sjsu/LPOS/domain/RestaurantLocation.class
 edu/sjsu/LPOS/repository/UserRepository.class
 edu/sjsu/LPOS/auth/login/LoginAuthenticationProvider.class
-edu/sjsu/LPOS/domain/Authority.class
 edu/sjsu/LPOS/service/RestaurantLocationService.class
 edu/sjsu/LPOS/domain/User.class
 edu/sjsu/LPOS/auth/login/LoginAuthenticationFailureHandler.class

@@ -1,5 +1,6 @@
 package edu.sjsu.LPOS.service;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,12 +12,7 @@ import edu.sjsu.LPOS.util.EncryptionUtil;
 @Service(value="userService")
 public class UserServiceImpl implements UserService {
 
-	private UserRepository userRepository;
-	 
-	@Autowired
-	public void UserRepository(UserRepository userRepository) {
-	    this.userRepository = userRepository;
-	}
+	@Autowired private UserRepository userRepository;
 	
 	@Override
 	public Iterable<User> listAllUsers() {
@@ -48,6 +44,6 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public User findUserById(Integer id) {
-		return userRepository.findById(id);
+		return userRepository.findByUserId(id);
 	}
 }

@@ -33,6 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	public static final String LOGIN_ENTRY_POINT = "/auth/login";
 	public static final String REFRESH_ENTRY_POINT = "/auth/refresh";
+	public static final String REGISTER_ENTRY_POINT = "/user/register";
 	
 	@Autowired LoginAuthenticationProvider loginAuthenticationProvider;
 	@Autowired TokenAuthenticationProvider tokenAuthenticationProvider;
@@ -54,6 +55,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	
     @Bean
     public LoginBasicFilter loginBasicFilter() throws Exception {
+//    	List<String> pathToSkip = Arrays.asList(LOGIN_ENTRY_POINT,REGISTER_ENTRY_POINT);
+//    	SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathToSkip);
     	LoginBasicFilter filter = new LoginBasicFilter(LOGIN_ENTRY_POINT);
     	filter.setAuthenticationManager(this.authenticationManager);
     	return filter;
@@ -61,7 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     
     @Bean
     public JwtAuthorizationFilter jwtFilterRegistrationBean() throws Exception {
-    	List<String> pathToSkip = Arrays.asList(LOGIN_ENTRY_POINT,REFRESH_ENTRY_POINT);
+    	List<String> pathToSkip = Arrays.asList(LOGIN_ENTRY_POINT,REFRESH_ENTRY_POINT,REGISTER_ENTRY_POINT);
     	SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathToSkip);
     	JwtAuthorizationFilter filter = new JwtAuthorizationFilter(matcher);
     	filter.setAuthenticationManager(this.authenticationManager);
@@ -87,6 +90,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 	.authorizeRequests()
                 		.antMatchers(LOGIN_ENTRY_POINT).permitAll()
                 		.antMatchers(REFRESH_ENTRY_POINT).permitAll()
+                		.antMatchers(REGISTER_ENTRY_POINT).permitAll()
                 .anyRequest().authenticated();
 
         //JWT based authentication

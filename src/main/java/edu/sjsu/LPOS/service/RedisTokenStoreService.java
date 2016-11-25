@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class RedisTokenStoreService {
 
-	private static final long EXPIRE_IN_HOURS = 48; 
 	
 	@Autowired
 	RedisTemplate<String, String> redisTemplate;
@@ -18,9 +17,9 @@ public class RedisTokenStoreService {
 		redisTemplate.opsForValue().set(username, token, expires, unit);
 	}
 	
-	public void set(String username, String token) {
-		redisTemplate.opsForValue().set(username, token, EXPIRE_IN_HOURS, TimeUnit.HOURS);
-	}
+//	public void set(String username, String token) {
+//		redisTemplate.opsForValue().set(username, token, EXPIRE_IN_HOURS, TimeUnit.HOURS);
+//	}
 	
 	public String get(String username) {
 		if (username == null) {

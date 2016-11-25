@@ -1,5 +1,7 @@
 package edu.sjsu.LPOS.auth;
 
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,7 +32,10 @@ public class TokenAuthenticationService {
 		UserAuthorities userAuthorities = new UserAuthorities(username, userDetails.getAuthorities());
 						
 		String accessToken = tokenUtil.createJwt(userAuthorities, setting.getAccessExpiresInSeconds() * 1000);
-		redisTokenStoreService.set(username + "_accessToken", accessToken);
+		redisTokenStoreService.set(username + "_accessToken", 
+								   accessToken, 
+								   setting.getAccessExpiresInSeconds(),
+								   TimeUnit.SECONDS);
 		return accessToken;
 	}
 }

@@ -16,33 +16,25 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.sjsu.LPOS.auth.AuthRequest;
 
 public class LoginBasicFilter extends AbstractAuthenticationProcessingFilter {
-
+		
+	@Autowired private ObjectMapper objectMapper;
+	@Autowired private AuthenticationSuccessHandler successHandler;
+	@Autowired private AuthenticationFailureHandler failureHandler;
 	
-
-//	protected LoginBasicFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
-//		super(requiresAuthenticationRequestMatcher);
-//		// TODO Auto-generated constructor stub
+//	public LoginBasicFilter(RequestMatcher matcher) {
+//		super(matcher);
 //	}
 	
-	@Autowired
-	private ObjectMapper objectMapper;
-	
-	@Autowired
-	private AuthenticationSuccessHandler successHandler;
-	
-	@Autowired
-	private AuthenticationFailureHandler failureHandler;
-	
-	public LoginBasicFilter(String defaultFilterProcessesUrl) {
-		super(defaultFilterProcessesUrl);
+	public LoginBasicFilter(String defaulturl) {
+		super(defaulturl);
 	}
-
 
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)

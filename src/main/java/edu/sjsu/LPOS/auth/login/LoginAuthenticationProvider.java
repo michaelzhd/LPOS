@@ -10,20 +10,25 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import edu.sjsu.LPOS.util.EncryptionUtil;
 @Component
 public class LoginAuthenticationProvider implements AuthenticationProvider{
 	
-	@Autowired
-	private UserDetailsService userDetailsService;
+	@Autowired private UserDetailsService userDetailsService;
 	
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
+        System.out.println("~~~~~~~~~~~~~~~~~in  login authentication provider~~~~~~~~~~~~~~~~~~~");
         UserDetails user = userDetailsService.loadUserByUsername(username);
+        if (user == null) {
+        	throw new BadCredentialsException("Username not found");
+        }
+        System.out.println("~~~~~~~~~~~~~~~~~user details get in login authentication~~~~~~~~~~~~~~~~~~~");
         String md5password = EncryptionUtil.digestWithMD5(password);
         if (!md5password.equals(user.getPassword())) {
             throw new BadCredentialsException("Authentication Failed. Username or Password not valid.");

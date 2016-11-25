@@ -1,7 +1,5 @@
 package edu.sjsu.LPOS.service;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -10,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import edu.sjsu.LPOS.domain.Authority;
 import edu.sjsu.LPOS.domain.SecurityUserDetails;
 import edu.sjsu.LPOS.domain.User;
 import edu.sjsu.LPOS.repository.UserRepository;
@@ -29,17 +26,18 @@ public class CustomUserDetailsService implements UserDetailsService{
 //        if(user.getAuthorities().equals("ROLE_waitforverify")){
 //            throw new DisabledException("Please check your email to confirm your registration");
 //        }
-        List<String> authorities = new ArrayList<String>();
-        for (Authority authority: user.getAuthorities()) {
-        	authorities.add(authority.getName().toString());
-        }
+//        List<String> authorities = new ArrayList<String>();
+//        for (Authority authority: user.getAuthorities()) {
+//        	authorities.add(authority.getName().toString());
+//        }
 
         return new SecurityUserDetails(
-                user.getId(),
+                user.getUserId(),
                 user.getUsername(),
                 user.getPassword(),
                 user.getEmail(),
-                AuthorityUtils.commaSeparatedStringToAuthorityList(String.join(",",authorities))
+                AuthorityUtils.commaSeparatedStringToAuthorityList(user.getAuthorities())
+//                AuthorityUtils.commaSeparatedStringToAuthorityList(String.join(",",authorities))
         );
 	}
 

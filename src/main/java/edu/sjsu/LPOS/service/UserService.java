@@ -1,5 +1,7 @@
 package edu.sjsu.LPOS.service;
 
+
+
 import edu.sjsu.LPOS.domain.User;
 
 public interface UserService {

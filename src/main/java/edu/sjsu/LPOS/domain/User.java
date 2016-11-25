@@ -8,30 +8,54 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "appuser")
 public class User {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long userId;
 
     private String username;
+    
+//    @JsonIgnore
     private String password;
     
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "USER_AUTHORITY",
-            joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
-            inverseJoinColumns = {@JoinColumn(name = "AUTHORITY_ID", referencedColumnName = "ID")})
-    private List<Authority> authorities;
-    @Override
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    @JoinTable(
+//            name = "USER_AUTHORITY",
+//            joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "USERID")},
+//            inverseJoinColumns = {@JoinColumn(name = "AUTHORITY_ID", referencedColumnName = "AUTHORITYID")})
+//    @JsonManagedReference
+ 
+    private String authorities;
+    
+    
+    public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	public String getAuthorities() {
+		return authorities;
+	}
+	public void setAuthorities(String authorities) {
+		this.authorities = authorities;
+	}
+	@Override
 	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", password=" + password + ", authorities=" + authorities
-				+ ", email=" + email + ", phonenumber=" + phonenumber + "]";
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("userId: ").append(userId)
+    	  .append("username: ").append(username)
+    	  .append("email: ").append(email)
+    	  .append("phonenumber: ").append(phonenumber)
+    	  .append("authorities: ").append(authorities.toString());
+		return sb.toString();
 	}
 	private String email;
     private String phonenumber;
@@ -39,12 +63,7 @@ public class User {
     public User() {
     	
     }
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
+
 	public String getUsername() {
 		return username;
 	}
@@ -59,12 +78,12 @@ public class User {
 	}
 
 
-	public List<Authority> getAuthorities() {
-		return authorities;
-	}
-	public void setAuthorities(List<Authority> authorities) {
-		this.authorities = authorities;
-	}
+//	public List<Authority> getAuthorities() {
+//		return authorities;
+//	}
+//	public void setAuthorities(List<Authority> authorities) {
+//		this.authorities = authorities;
+//	}
 	public String getEmail() {
 		return email;
 	}
