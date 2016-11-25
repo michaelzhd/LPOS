@@ -14,14 +14,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import edu.sjsu.LPOS.auth.LocalAuthServerSetting;
-import edu.sjsu.LPOS.service.RedisTokenStoreService;
 
 public class JwtAuthorizationFilter extends AbstractAuthenticationProcessingFilter{
 	

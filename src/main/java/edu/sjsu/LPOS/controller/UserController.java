@@ -1,7 +1,8 @@
 package edu.sjsu.LPOS.controller;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.sjsu.LPOS.beans.ResponseBean;
 import edu.sjsu.LPOS.domain.AuthorityName;
 import edu.sjsu.LPOS.domain.User;
 import edu.sjsu.LPOS.service.UserService;
@@ -27,11 +29,14 @@ public class UserController {
 	
 //	@PreAuthorize("hasRole('')")
 	@RequestMapping(value = "register", method = RequestMethod.POST)
-	public ResponseEntity<User> createUser(@RequestBody User user) {
-		System.out.println("register-----" + user.toString());
+	public ResponseEntity<ResponseBean> createUser(@RequestBody User user) {
+
+		ResponseBean respBean = new ResponseBean();
 		if (user == null || user.getUserId() != null || user.getUsername() == null
 			|| user.getPassword() == null || user.getEmail() == null) {
-			return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+			respBean.setStatus("Failed");
+			respBean.setMessage("Incomplete or bad input.");
+			return new ResponseEntity<ResponseBean>(respBean, HttpStatus.BAD_REQUEST);
 		}
 		String authorityString = user.getAuthorities();
 		List<GrantedAuthority> authlist = AuthorityUtils.commaSeparatedStringToAuthorityList(authorityString);
@@ -40,24 +45,46 @@ public class UserController {
 //		}
 		User existedUser = userService.findUserByUsername(user.getUsername());
 		if (existedUser != null) {
-			return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+			respBean.setStatus("Failed");
+			respBean.setMessage("User already existed.");
+			return new ResponseEntity<ResponseBean>(respBean, HttpStatus.BAD_REQUEST);
 		}
 		System.out.println(authlist);
 		userService.saveUser(user);
 		User savedUser = userService.findUserByUsername(user.getUsername());
-		return new ResponseEntity<User>(savedUser, HttpStatus.OK);
+		Map<String, Object> map = new HashMap<>();
+		map.put("user", savedUser);
+		respBean.setStatus("OK");
+		respBean.setData(map);
+		return new ResponseEntity<ResponseBean>(respBean, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public ResponseEntity<List<User>> getAllUsers() {
+	public ResponseEntity<ResponseBean> getAllUsers() {
 		List<User> userlist = (List<User>) userService.listAllUsers();
-		return new ResponseEntity<List<User>>(userlist, HttpStatus.OK);
+		ResponseBean respBean = new ResponseBean();
+		Map<String, Object> map = new HashMap<>();
+		map.put("users", userlist);
+		respBean.setData(map);
+		respBean.setStatus("OK");
+		return new ResponseEntity<ResponseBean>(respBean, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/{username}", method = RequestMethod.GET)
-	public ResponseEntity<User> getUserByUsername(@PathVariable("username") String username) {
+	public ResponseEntity<ResponseBean> getUserByUsername(@PathVariable("username") String username) {
+		ResponseBean respBean = new ResponseBean();
 		User user = userService.findUserByUsername(username);
-		return new ResponseEntity<User>(user, HttpStatus.OK);
+		if (user == null) {
+			respBean.setStatus("Failed");
+			respBean.setMessage("User not found.");
+			return new ResponseEntity<ResponseBean>(respBean, HttpStatus.NOT_FOUND);
+		}
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("user", user);
+		respBean.setData(map);
+		respBean.setStatus("OK");
+		return new ResponseEntity<ResponseBean>(respBean, HttpStatus.OK);
 	}
 	
 }

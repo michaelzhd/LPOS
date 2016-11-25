@@ -23,18 +23,17 @@ public class LoginAuthenticationProvider implements AuthenticationProvider{
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
-        System.out.println("~~~~~~~~~~~~~~~~~in  login authentication provider~~~~~~~~~~~~~~~~~~~");
         UserDetails user = userDetailsService.loadUserByUsername(username);
         if (user == null) {
         	throw new BadCredentialsException("Username not found");
         }
-        System.out.println("~~~~~~~~~~~~~~~~~user details get in login authentication~~~~~~~~~~~~~~~~~~~");
         String md5password = EncryptionUtil.digestWithMD5(password);
         if (!md5password.equals(user.getPassword())) {
             throw new BadCredentialsException("Authentication Failed. Username or Password not valid.");
         }
-        if (user.getAuthorities() == null) throw new InsufficientAuthenticationException("User has no roles assigned");
-        System.out.println("user.getauthorities>>>>>>" + user.getAuthorities());
+        if (user.getAuthorities() == null) {
+        	throw new InsufficientAuthenticationException("User has no roles assigned");
+        }
         return new UsernamePasswordAuthenticationToken(username, null, user.getAuthorities());
 	}
 

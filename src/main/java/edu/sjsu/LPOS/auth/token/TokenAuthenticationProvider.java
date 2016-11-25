@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import edu.sjsu.LPOS.auth.JwtTokenUtil;
+import edu.sjsu.LPOS.exception.InvalidTokenException;
 import edu.sjsu.LPOS.service.RedisTokenStoreService;
 import io.jsonwebtoken.Claims;
 
@@ -33,9 +34,8 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
 		}
 		String username = claims.get("username", String.class);
 		String tokenInRedis = redisTokenStoreService.get(username + "_accessToken");
-		System.out.println("tokenInRedis-==>>>>" + tokenInRedis);
 		if (!token.equals(tokenInRedis)){
-			throw new BadCredentialsException("Unknown or expired token");
+			throw new InvalidTokenException("Unknown or expired token");
 		}
 		UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 		List<GrantedAuthority> authorities = (List<GrantedAuthority>) userDetails.getAuthorities();

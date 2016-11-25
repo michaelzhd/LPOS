@@ -21,6 +21,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.sjsu.LPOS.auth.AuthRequest;
+import edu.sjsu.LPOS.exception.BadUsernamePasswordException;
 
 public class LoginBasicFilter extends AbstractAuthenticationProcessingFilter {
 		
@@ -28,20 +29,20 @@ public class LoginBasicFilter extends AbstractAuthenticationProcessingFilter {
 	@Autowired private AuthenticationSuccessHandler successHandler;
 	@Autowired private AuthenticationFailureHandler failureHandler;
 	
-//	public LoginBasicFilter(RequestMatcher matcher) {
-//		super(matcher);
-//	}
-	
-	public LoginBasicFilter(String defaulturl) {
-		super(defaulturl);
+	public LoginBasicFilter(RequestMatcher matcher) {
+		super(matcher);
 	}
+	
+//	public LoginBasicFilter(String defaulturl) {
+//		super(defaulturl);
+//	}
 
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException, IOException, ServletException {
 		AuthRequest authRequest = objectMapper.readValue(request.getReader(), AuthRequest.class);
 		if (authRequest == null || authRequest.getUsername() == "" || authRequest.getPassword() == "") {
-			throw new AuthenticationServiceException("No username or password");
+			throw new BadUsernamePasswordException("No username or password provided.");
 		}
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(authRequest.getUsername(),
 				authRequest.getPassword());

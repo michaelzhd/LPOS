@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,6 +26,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.sjsu.LPOS.auth.JwtTokenUtil;
 import edu.sjsu.LPOS.auth.LocalAuthServerSetting;
 import edu.sjsu.LPOS.auth.UserAuthorities;
+import edu.sjsu.LPOS.beans.Message;
+import edu.sjsu.LPOS.beans.ResponseBean;
 import edu.sjsu.LPOS.domain.User;
 import edu.sjsu.LPOS.repository.UserRepository;
 import edu.sjsu.LPOS.service.RedisTokenStoreService;
@@ -47,21 +51,13 @@ public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessH
 			UserAuthorities userAuthorities = new UserAuthorities(auth.getPrincipal(), auth.getAuthorities());
 			String accessToken = tokenUtil.createJwt(userAuthorities, setting.getAccessExpiresInSeconds() * 1000);
 			String refreshToken = tokenUtil.createJwt(userAuthorities, setting.getRefreshExpiresInSeconds() * 1000);
-//			System.out.println("~~~~~~~~~~~~~~~~~in successhandler~~~~~~~~~~~~~~~~~~~");
 			String username = auth.getPrincipal().toString();
-//			User user = userRepository.findByUsername(username);
-//			UserDetails user = userDetailsService.loadUserByUsername(username);
 			User user = userService.findUserByUsername(username);
-//			System.out.println("~~~~~~~~~~~~~~~~~user details ~~~~~~~~~~~~~~~~~~~");
 			Map<String, Object> map = new HashMap<>();
-			user.setPassword("Confidential");
+			user.setPassword("Your password has been saved");
 			map.put("user", user);
 			map.put("accessToken", accessToken);
 			map.put("refreshToken", refreshToken);
-			
-//			System.out.println("~~~~~~~~~~~~~~~~~accessToken generated~~~~~~~~~~~~~~~~~~~");
-			
-			objectMapper.writeValue(response.getWriter(), map);
 			
 			redisTokenStoreService.set(userAuthorities.getUsername() + "_accessToken", 
 									   accessToken, 
@@ -77,6 +73,13 @@ public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessH
 			if (session != null) {
 				session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 			}
+			response.setStatus(HttpStatus.OK.value());
+			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+			ResponseBean respBean = new ResponseBean();
+			respBean.setMessage(Message.OK.getMessageText());
+			respBean.setStatus(Message.OK.name());
+			respBean.setData(map);
+			objectMapper.writeValue(response.getWriter(), respBean);
 	}
 
 }

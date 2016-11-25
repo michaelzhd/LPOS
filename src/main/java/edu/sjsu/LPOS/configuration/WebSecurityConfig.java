@@ -15,10 +15,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-
+import edu.sjsu.LPOS.auth.login.InterceptPathRequestMatcher;
 import edu.sjsu.LPOS.auth.login.LoginAuthenticationProvider;
 import edu.sjsu.LPOS.auth.login.LoginBasicFilter;
 import edu.sjsu.LPOS.auth.token.JwtAuthorizationFilter;
@@ -39,6 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Autowired TokenAuthenticationProvider tokenAuthenticationProvider;
 	@Autowired UserDetailsService userDetailsService;
 	@Autowired AuthenticationManager authenticationManager;
+	@Autowired AuthenticationEntryPoint authenticationEntryPoint;
 	
 	@Autowired
 	public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -55,9 +57,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	
     @Bean
     public LoginBasicFilter loginBasicFilter() throws Exception {
-//    	List<String> pathToSkip = Arrays.asList(LOGIN_ENTRY_POINT,REGISTER_ENTRY_POINT);
-//    	SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathToSkip);
-    	LoginBasicFilter filter = new LoginBasicFilter(LOGIN_ENTRY_POINT);
+    	List<String> pathToListen = Arrays.asList(LOGIN_ENTRY_POINT);
+    	InterceptPathRequestMatcher matcher = new InterceptPathRequestMatcher(pathToListen);
+    	LoginBasicFilter filter = new LoginBasicFilter(matcher);
     	filter.setAuthenticationManager(this.authenticationManager);
     	return filter;
     }
@@ -81,7 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         httpSecurity
                 .csrf().disable()
                 .exceptionHandling()
-//                .authenticationEntryPoint(authenticationEntryPoint)
+                .authenticationEntryPoint(authenticationEntryPoint)
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

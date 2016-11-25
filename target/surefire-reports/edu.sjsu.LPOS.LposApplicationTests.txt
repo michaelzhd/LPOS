@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: edu.sjsu.LPOS.LposApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 8.539 sec <<< FAILURE! - in edu.sjsu.LPOS.LposApplicationTests
-contextLoads(edu.sjsu.LPOS.LposApplicationTests)  Time elapsed: 0.035 sec  <<< ERROR!
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 8.336 sec <<< FAILURE! - in edu.sjsu.LPOS.LposApplicationTests
+contextLoads(edu.sjsu.LPOS.LposApplicationTests)  Time elapsed: 0.026 sec  <<< ERROR!
 java.lang.IllegalStateException: Failed to load ApplicationContext
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:124)
 	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:83)
