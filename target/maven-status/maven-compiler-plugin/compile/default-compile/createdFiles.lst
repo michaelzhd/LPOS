@@ -1,7 +1,9 @@
 edu/sjsu/LPOS/controller/RestaurantLocationController.class
 edu/sjsu/LPOS/beans/ResponseBean.class
+edu/sjsu/LPOS/domain/Address.class
 edu/sjsu/LPOS/auth/login/LoginBasicFilter.class
 edu/sjsu/LPOS/auth/token/SkipPathRequestMatcher.class
+edu/sjsu/LPOS/domain/Location.class
 edu/sjsu/LPOS/LposApplication.class
 edu/sjsu/LPOS/util/EncryptionUtil.class
 edu/sjsu/LPOS/auth/TokenAuthenticationService.class
@@ -20,6 +22,7 @@ edu/sjsu/LPOS/configuration/RedisConfig.class
 edu/sjsu/LPOS/controller/AuthenticationController.class
 edu/sjsu/LPOS/exception/InvalidTokenException.class
 edu/sjsu/LPOS/service/CustomUserDetailsService.class
+edu/sjsu/LPOS/auth/RestAccessDeniedHandler.class
 edu/sjsu/LPOS/auth/RestAuthenticationEntryPoint.class
 edu/sjsu/LPOS/auth/JwtTokenUtil.class
 edu/sjsu/LPOS/auth/login/InterceptPathRequestMatcher.class
@@ -36,6 +39,7 @@ edu/sjsu/LPOS/service/RedisTokenStoreService.class
 edu/sjsu/LPOS/auth/token/TokenAuthenticationProvider.class
 edu/sjsu/LPOS/exception/BadUsernamePasswordException.class
 edu/sjsu/LPOS/configuration/SecurityConfig.class
+edu/sjsu/LPOS/controller/ExceptionHandlerController.class
 edu/sjsu/LPOS/repository/RestaurantLocationRepository.class
 edu/sjsu/LPOS/service/RestaurantLocationServiceImpl.class
 edu/sjsu/LPOS/auth/LocalAuthServerSetting.class

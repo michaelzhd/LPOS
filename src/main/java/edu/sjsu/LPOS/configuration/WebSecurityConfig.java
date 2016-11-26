@@ -16,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -41,6 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Autowired UserDetailsService userDetailsService;
 	@Autowired AuthenticationManager authenticationManager;
 	@Autowired AuthenticationEntryPoint authenticationEntryPoint;
+	@Autowired AccessDeniedHandler accessDeniedHandler;
 	
 	@Autowired
 	public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -93,7 +95,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 		.antMatchers(LOGIN_ENTRY_POINT).permitAll()
                 		.antMatchers(REFRESH_ENTRY_POINT).permitAll()
                 		.antMatchers(REGISTER_ENTRY_POINT).permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler);
+//                .and()
+//                .exceptionHandling().;
 
         //JWT based authentication
         httpSecurity
