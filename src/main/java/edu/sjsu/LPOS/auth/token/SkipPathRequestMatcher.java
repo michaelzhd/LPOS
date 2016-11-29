@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 public class SkipPathRequestMatcher implements RequestMatcher {
@@ -21,6 +22,7 @@ public class SkipPathRequestMatcher implements RequestMatcher {
 		List<RequestMatcher> requestMatchers = new ArrayList<>();
 		for (String path: pathToSkip) {
 			requestMatchers.add(new AntPathRequestMatcher(path));
+			requestMatchers.add(new RegexRequestMatcher(path + ".*", "GET"));
 		}
 		matchers = new OrRequestMatcher(requestMatchers);
 		

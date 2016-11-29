@@ -26,9 +26,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User saveUser(User user) {
-		String digestedPassword = EncryptionUtil.digestWithMD5(user.getPassword());
-		user.setPassword(digestedPassword);
-
 		return userRepository.save(user);
 	}
 

@@ -15,13 +15,13 @@ import org.springframework.stereotype.Component;
 
 import edu.sjsu.LPOS.auth.JwtTokenUtil;
 import edu.sjsu.LPOS.exception.InvalidTokenException;
-import edu.sjsu.LPOS.service.RedisTokenStoreService;
+import edu.sjsu.LPOS.service.RedisStoreService;
 import io.jsonwebtoken.Claims;
 
 @Component
 public class TokenAuthenticationProvider implements AuthenticationProvider {
 	
-	@Autowired private RedisTokenStoreService redisTokenStoreService;
+	@Autowired private RedisStoreService redisTokenStoreService;
 	@Autowired private UserDetailsService userDetailsService;
 	@Autowired private JwtTokenUtil tokenUtil;
 

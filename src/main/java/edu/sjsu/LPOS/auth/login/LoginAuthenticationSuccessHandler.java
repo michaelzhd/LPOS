@@ -14,12 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -28,17 +25,18 @@ import edu.sjsu.LPOS.auth.LocalAuthServerSetting;
 import edu.sjsu.LPOS.auth.UserAuthorities;
 import edu.sjsu.LPOS.beans.Message;
 import edu.sjsu.LPOS.beans.ResponseBean;
+import edu.sjsu.LPOS.beans.UserBean;
 import edu.sjsu.LPOS.domain.User;
-import edu.sjsu.LPOS.repository.UserRepository;
-import edu.sjsu.LPOS.service.RedisTokenStoreService;
+import edu.sjsu.LPOS.service.RedisStoreService;
 import edu.sjsu.LPOS.service.UserService;
+import edu.sjsu.LPOS.util.UserBeanUtil;
 
 
 
 @Component("successHandler")
 public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 	
-	@Autowired private RedisTokenStoreService redisTokenStoreService;
+	@Autowired private RedisStoreService redisTokenStoreService;
 	@Autowired private JwtTokenUtil tokenUtil;
 	@Autowired private ObjectMapper objectMapper;
 	@Autowired private LocalAuthServerSetting setting;
@@ -53,18 +51,18 @@ public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessH
 			String refreshToken = tokenUtil.createJwt(userAuthorities, setting.getRefreshExpiresInSeconds() * 1000);
 			String username = auth.getPrincipal().toString();
 			User user = userService.findUserByUsername(username);
+			UserBean userBean = UserBeanUtil.getUserBeanFromUser(user);
 			Map<String, Object> map = new HashMap<>();
-			user.setPassword("Your password has been saved");
-			map.put("user", user);
+			map.put("user", userBean);
 			map.put("accessToken", accessToken);
 			map.put("refreshToken", refreshToken);
 			
-			redisTokenStoreService.set(userAuthorities.getUsername() + "_accessToken", 
+			redisTokenStoreService.setToken(userAuthorities.getUsername() + "_accessToken", 
 									   accessToken, 
 									   setting.getAccessExpiresInSeconds(),
 									   TimeUnit.SECONDS);
 			
-			redisTokenStoreService.set(userAuthorities.getUsername() + "_refreshToken", 
+			redisTokenStoreService.setToken(userAuthorities.getUsername() + "_refreshToken", 
 									   refreshToken,
 									   setting.getRefreshExpiresInSeconds(),
 									   TimeUnit.SECONDS);

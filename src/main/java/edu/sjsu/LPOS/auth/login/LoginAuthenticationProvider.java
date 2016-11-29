@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.sjsu.LPOS.exception.NotVerifiedException;
 import edu.sjsu.LPOS.util.EncryptionUtil;
 @Component
 public class LoginAuthenticationProvider implements AuthenticationProvider{
@@ -33,6 +34,9 @@ public class LoginAuthenticationProvider implements AuthenticationProvider{
         }
         if (user.getAuthorities() == null) {
         	throw new InsufficientAuthenticationException("User has no roles assigned");
+        }
+        if (user.getAuthorities().contains("waitforverify")) {
+        	throw new NotVerifiedException("Your account has not been verified yet. Please check your email.");
         }
         return new UsernamePasswordAuthenticationToken(username, null, user.getAuthorities());
 	}

@@ -33,9 +33,11 @@ import edu.sjsu.LPOS.auth.token.TokenAuthenticationProvider;
 @EnableTransactionManagement
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	
-	public static final String LOGIN_ENTRY_POINT = "/auth/login";
-	public static final String REFRESH_ENTRY_POINT = "/auth/refresh";
+	public static final String LOGIN_ENTRY_POINT = "/user/login";
+	public static final String REFRESH_ENTRY_POINT = "/user/refresh";
 	public static final String REGISTER_ENTRY_POINT = "/user/register";
+	public static final String REGISTER_CONFIRM_POINT = "/user/register/confirm";
+
 	
 	@Autowired LoginAuthenticationProvider loginAuthenticationProvider;
 	@Autowired TokenAuthenticationProvider tokenAuthenticationProvider;
@@ -68,7 +70,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     
     @Bean
     public JwtAuthorizationFilter jwtFilterRegistrationBean() throws Exception {
-    	List<String> pathToSkip = Arrays.asList(LOGIN_ENTRY_POINT,REFRESH_ENTRY_POINT,REGISTER_ENTRY_POINT);
+    	List<String> pathToSkip = Arrays.asList(LOGIN_ENTRY_POINT,REFRESH_ENTRY_POINT,
+    											REGISTER_ENTRY_POINT, REGISTER_CONFIRM_POINT);
     	SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathToSkip);
     	JwtAuthorizationFilter filter = new JwtAuthorizationFilter(matcher);
     	filter.setAuthenticationManager(this.authenticationManager);
@@ -95,6 +98,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 		.antMatchers(LOGIN_ENTRY_POINT).permitAll()
                 		.antMatchers(REFRESH_ENTRY_POINT).permitAll()
                 		.antMatchers(REGISTER_ENTRY_POINT).permitAll()
+                		.antMatchers(REGISTER_CONFIRM_POINT).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler);

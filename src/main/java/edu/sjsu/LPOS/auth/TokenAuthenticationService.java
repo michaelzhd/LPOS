@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import edu.sjsu.LPOS.service.RedisTokenStoreService;
+import edu.sjsu.LPOS.service.RedisStoreService;
 import io.jsonwebtoken.Claims;
 
 @Service
@@ -15,7 +15,7 @@ public class TokenAuthenticationService {
 
 	@Autowired private LocalAuthServerSetting setting;
 	@Autowired private JwtTokenUtil tokenUtil;
-	@Autowired private RedisTokenStoreService redisTokenStoreService;
+	@Autowired private RedisStoreService redisTokenStoreService;
 	@Autowired private UserDetailsService userDetailsService;
 	
 	public String getAccessTokenByRefreshToken(String refreshToken) {
@@ -32,7 +32,7 @@ public class TokenAuthenticationService {
 		UserAuthorities userAuthorities = new UserAuthorities(username, userDetails.getAuthorities());
 						
 		String accessToken = tokenUtil.createJwt(userAuthorities, setting.getAccessExpiresInSeconds() * 1000);
-		redisTokenStoreService.set(username + "_accessToken", 
+		redisTokenStoreService.setToken(username + "_accessToken", 
 								   accessToken, 
 								   setting.getAccessExpiresInSeconds(),
 								   TimeUnit.SECONDS);

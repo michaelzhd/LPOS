@@ -2,6 +2,7 @@ package edu.sjsu.LPOS.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,9 +24,9 @@ public class CustomUserDetailsService implements UserDetailsService{
         if(user == null){
             throw new UsernameNotFoundException("not found");
         }
-//        if(user.getAuthorities().equals("ROLE_waitforverify")){
-//            throw new DisabledException("Please check your email to confirm your registration");
-//        }
+        if(user.getAuthorities().indexOf("ROLE_waitforverify") != -1){
+            throw new DisabledException("Please check your email to confirm your registration");
+        }
 //        List<String> authorities = new ArrayList<String>();
 //        for (Authority authority: user.getAuthorities()) {
 //        	authorities.add(authority.getName().toString());
