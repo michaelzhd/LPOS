@@ -32,9 +32,6 @@ public class JwtTokenUtil {
 	@Autowired private LocalAuthServerSetting setting;
 	@Autowired private RedisStoreService redisTokenStoreService;
 
-
-	@Autowired private UserService userService;
-	
 	public  Claims parseJwt(String jwt) {
 		try {
 			Claims claims = Jwts.parser()

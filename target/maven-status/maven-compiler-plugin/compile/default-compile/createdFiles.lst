@@ -35,7 +35,6 @@ edu/sjsu/LPOS/controller/FavoriteRestController.class
 edu/sjsu/LPOS/DTO/ResponseDTO.class
 edu/sjsu/LPOS/beans/UserRegisterBean.class
 edu/sjsu/LPOS/configuration/MailConfig.class
-edu/sjsu/LPOS/configuration/WebSocketConfig.class
 edu/sjsu/LPOS/domain/UserChats.class
 edu/sjsu/LPOS/controller/MenuRestController.class
 edu/sjsu/LPOS/repository/TableInfoRepository.class

@@ -55,8 +55,10 @@ public class UserController {
 	@RequestMapping(value = "register", method = RequestMethod.POST)
 	public ResponseEntity<ResponseBean> createUser(@RequestBody UserRegisterBean userRegisterBean) {
 		ResponseBean respBean = new ResponseBean();
-		if (userRegisterBean == null || userRegisterBean.getUsername() == null
-			|| userRegisterBean.getPassword() == null ) {
+		if (userRegisterBean == null 
+			|| userRegisterBean.getUsername() == null
+			|| userRegisterBean.getPassword() == null 
+			|| (userRegisterBean.getUsername().indexOf('@') == -1 && userRegisterBean.getEmail().indexOf('@') == -1)) {
 			respBean.setStatus("Failed");
 			respBean.setMessage("Incomplete or bad input(either username, password or email.");
 			return new ResponseEntity<ResponseBean>(respBean, HttpStatus.BAD_REQUEST);
@@ -107,7 +109,7 @@ public class UserController {
 		return new ResponseEntity<ResponseBean>(respBean, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/{userId}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/userid/{userId}", method = RequestMethod.PUT)
 	public ResponseEntity<ResponseBean> updateUser(@RequestBody UserRegisterBean userRegisterBean,
 			@PathVariable("userId") int userId) {
 		ResponseBean respBean = new ResponseBean();
@@ -131,8 +133,8 @@ public class UserController {
 		respBean.setStatus("OK");
 		return new ResponseEntity<ResponseBean>(respBean, HttpStatus.OK);
 	}
-	
-	@RequestMapping(value = "", method = RequestMethod.GET)
+	 
+	@RequestMapping(value = "/username", method = RequestMethod.GET)
 	public ResponseEntity<ResponseBean> getAllUsers() {
 		List<User> userlist = (List<User>) userService.listAllUsers();
 		List<UserBean> userBeanList = new ArrayList<>();
@@ -147,7 +149,12 @@ public class UserController {
 		return new ResponseEntity<ResponseBean>(respBean, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/{username}", method = RequestMethod.GET)
+	@RequestMapping(value = "/userid", method = RequestMethod.GET)
+	public ResponseEntity<ResponseBean> getAllUsersFromId() {
+		return getAllUsers();
+	}
+	
+	@RequestMapping(value = "/username/{username}", method = RequestMethod.GET)
 	public ResponseEntity<ResponseBean> getUserByUsername(@PathVariable("username") String username) {
 		ResponseBean respBean = new ResponseBean();
 		User user = userService.findUserByUsername(username);
@@ -165,10 +172,27 @@ public class UserController {
 		return new ResponseEntity<ResponseBean>(respBean, HttpStatus.OK);
 	}
 	
+	@RequestMapping(value = "/userid/{userId}", method = RequestMethod.GET)
+	public ResponseEntity<ResponseBean> getUserByUserId(@PathVariable("userId") int userId) {
+		ResponseBean respBean = new ResponseBean();
+		User user = userService.findUserById(userId);
+		if (user == null) {
+			respBean.setStatus("Failed");
+			respBean.setMessage("User not found.");
+			return new ResponseEntity<ResponseBean>(respBean, HttpStatus.NOT_FOUND);
+		}
+		
+		Map<String, Object> map = new HashMap<>();
+		UserBean userBean = UserBeanUtil.getUserBeanFromUser(user);
+		map.put("user", userBean);
+		respBean.setData(map);
+		respBean.setStatus("OK");
+		return new ResponseEntity<ResponseBean>(respBean, HttpStatus.OK);
+	}
+	
 	
     @RequestMapping(value="/register/confirm", method = RequestMethod.GET)
     public ResponseEntity<ResponseBean> getConfirm (@RequestParam(value = "id") Integer id, @RequestParam(value = "code") Integer code) {
-    	System.out.println();
     	User fetchUser = userService.findUserById(id);
     	String codeKey = String.valueOf(code);
     	String codeValue = redisStoreService.getVerificationCode(codeKey);

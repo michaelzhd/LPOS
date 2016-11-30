@@ -31,10 +31,13 @@ public class JwtAuthorizationFilter extends AbstractAuthenticationProcessingFilt
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException, IOException, ServletException {
 		String authString = request.getHeader("Authorization");
-		if (authString == null || authString.length() <= 7 || !authString.substring(0, 6).equalsIgnoreCase("bearer")) {
+		if (authString == null 
+			|| authString.length() <= 7 
+			|| !authString.substring(0, 6).equalsIgnoreCase("bearer")
+			|| authString.split("\\s+").length != 2) {
 			throw new BadCredentialsException("No token or broken token");
 		}
-		String token = authString.substring(7);
+		String token = authString.split("\\s+")[1];
 		Authentication authentication = new UsernamePasswordAuthenticationToken("", token);
 		return this.getAuthenticationManager().authenticate(authentication);
 	}
