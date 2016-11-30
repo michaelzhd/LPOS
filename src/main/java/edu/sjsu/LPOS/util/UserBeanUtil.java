@@ -14,6 +14,7 @@ public class UserBeanUtil {
 		bean.setUserId(user.getUserId());
 		bean.setPhonenumber(user.getPhonenumber());
 		bean.setUsername(user.getUsername());
+		bean.setAddress(user.getAddress());
 		return bean;
 	}
 }

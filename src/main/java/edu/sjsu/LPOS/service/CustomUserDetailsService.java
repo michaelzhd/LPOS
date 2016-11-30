@@ -24,9 +24,9 @@ public class CustomUserDetailsService implements UserDetailsService{
         if(user == null){
             throw new UsernameNotFoundException("not found");
         }
-        if(user.getAuthorities().indexOf("ROLE_waitforverify") != -1){
-            throw new DisabledException("Please check your email to confirm your registration");
-        }
+//        if(user.getAuthorities().indexOf("ROLE_waitforverify") != -1){
+//            throw new DisabledException("Please check your email to confirm your registration");
+//        }
 //        List<String> authorities = new ArrayList<String>();
 //        for (Authority authority: user.getAuthorities()) {
 //        	authorities.add(authority.getName().toString());

@@ -9,7 +9,7 @@ public class HtmlPageComposer {
 	
     public static String registerConfirmation(User user, String code, String mailServiceServer, int mailServicePort, int expireInHours) {
         String page = "<html><body>"
-                + "<h3>Dear Customer,</h3>"
+                + "<h3>Dear " + user.getUsername() + ",</h3>"
                 + "<br /> Congratulation! Your account is waiting for your confirmation."
                 + "<h3>Please click the following link to activate:</h3>"
                 + "<a href='http://"

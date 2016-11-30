@@ -8,6 +8,25 @@ public class UserRegisterBean {
 	
 	private String email;
 
+	private String phonenumber;
+	
+	private String address;
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getPhonenumber() {
+		return phonenumber;
+	}
+
+	public void setPhonenumber(String phonenumber) {
+		this.phonenumber = phonenumber;
+	}
 
 	public String getEmail() {
 		return email;

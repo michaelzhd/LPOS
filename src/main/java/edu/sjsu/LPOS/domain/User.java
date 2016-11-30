@@ -34,8 +34,15 @@ public class User {
  
     private String authorities;
     
+    private String address;
     
-    public Long getUserId() {
+    public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public Long getUserId() {
 		return userId;
 	}
 	public void setUserId(Long userId) {

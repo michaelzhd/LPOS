@@ -36,36 +36,25 @@ import edu.sjsu.LPOS.util.UserBeanUtil;
 @Component("successHandler")
 public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 	
-	@Autowired private RedisStoreService redisTokenStoreService;
+	@Autowired private UserService userService;
 	@Autowired private JwtTokenUtil tokenUtil;
 	@Autowired private ObjectMapper objectMapper;
-	@Autowired private LocalAuthServerSetting setting;
-	@Autowired private UserService userService;
 	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication auth) throws IOException, ServletException {
 			
 			UserAuthorities userAuthorities = new UserAuthorities(auth.getPrincipal(), auth.getAuthorities());
-			String accessToken = tokenUtil.createJwt(userAuthorities, setting.getAccessExpiresInSeconds() * 1000);
-			String refreshToken = tokenUtil.createJwt(userAuthorities, setting.getRefreshExpiresInSeconds() * 1000);
-			String username = auth.getPrincipal().toString();
+			String username = userAuthorities.getUsername();
 			User user = userService.findUserByUsername(username);
 			UserBean userBean = UserBeanUtil.getUserBeanFromUser(user);
 			Map<String, Object> map = new HashMap<>();
+			
+			String accessToken = tokenUtil.createAccessToken(userAuthorities);
+			String refreshToken = tokenUtil.createRefreshToken(userAuthorities);
 			map.put("user", userBean);
 			map.put("accessToken", accessToken);
 			map.put("refreshToken", refreshToken);
-			
-			redisTokenStoreService.setToken(userAuthorities.getUsername() + "_accessToken", 
-									   accessToken, 
-									   setting.getAccessExpiresInSeconds(),
-									   TimeUnit.SECONDS);
-			
-			redisTokenStoreService.setToken(userAuthorities.getUsername() + "_refreshToken", 
-									   refreshToken,
-									   setting.getRefreshExpiresInSeconds(),
-									   TimeUnit.SECONDS);
 			
 			HttpSession session = request.getSession(false);
 			if (session != null) {

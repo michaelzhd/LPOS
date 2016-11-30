@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.sjsu.LPOS.auth.JwtTokenUtil;
+import edu.sjsu.LPOS.auth.UserAuthorities;
 import edu.sjsu.LPOS.beans.ResponseBean;
 import edu.sjsu.LPOS.beans.UserBean;
 import edu.sjsu.LPOS.beans.UserRegisterBean;
@@ -39,6 +41,7 @@ public class UserController {
 	@Autowired private UserService userService;
 	@Autowired private EmailService emailService;
 	@Autowired private RedisStoreService redisStoreService;
+	@Autowired private JwtTokenUtil tokenUtil;
 	
 	@Value("${mailconfig.mailservice.expireInHours}")
 	private int mailLinkExpireInHours;
@@ -82,6 +85,12 @@ public class UserController {
 		UserBean userBean = UserBeanUtil.getUserBeanFromUser(savedUser);
 		Map<String, Object> map = new HashMap<>();
 		map.put("user", userBean);
+		List<GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(user.getAuthorities());
+		UserAuthorities userAuthorities = new UserAuthorities(savedUser.getUsername(), authorities);
+		String accessToken = tokenUtil.createAccessToken(userAuthorities);
+		String refreshToken = tokenUtil.createRefreshToken(userAuthorities);
+		map.put("accessToken", accessToken);
+		map.put("refreshToken", refreshToken);
 		respBean.setStatus("OK");
 		respBean.setData(map);
 		
@@ -95,6 +104,31 @@ public class UserController {
     				codeKey,mailServiceServer,mailServicePort,mailLinkExpireInHours);
     	emailService.send(user, page);
 		redisStoreService.setVerificationCode(codeKey, codeKey, mailLinkExpireInHours, TimeUnit.HOURS);
+		return new ResponseEntity<ResponseBean>(respBean, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/{userId}", method = RequestMethod.PUT)
+	public ResponseEntity<ResponseBean> updateUser(@RequestBody UserRegisterBean userRegisterBean,
+			@PathVariable("userId") long userId) {
+		ResponseBean respBean = new ResponseBean();
+		Map<String, Object> map = new HashMap<>();
+		User fetchUser = userService.findUserById(userId);
+		if (fetchUser.getUsername().equals(userRegisterBean.getUsername())) {
+			respBean.setStatus("Failed");
+			respBean.setMessage("Usernames can not be updated.");
+			return new ResponseEntity<ResponseBean>(respBean, HttpStatus.BAD_REQUEST);
+		}
+		if (userRegisterBean.getPhonenumber() != null) {
+			fetchUser.setPhonenumber(userRegisterBean.getPhonenumber());
+		}
+		
+		if (userRegisterBean.getAddress() != null) {
+			fetchUser.setAddress(userRegisterBean.getAddress());
+		}
+		userService.saveUser(fetchUser);
+		map.put("user", UserBeanUtil.getUserBeanFromUser(fetchUser));
+		respBean.setData(map);
+		respBean.setStatus("OK");
 		return new ResponseEntity<ResponseBean>(respBean, HttpStatus.OK);
 	}
 	
@@ -133,7 +167,7 @@ public class UserController {
 	
 	
     @RequestMapping(value="/register/confirm", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBean> getConfirm (@RequestParam(value = "id") Integer id, @RequestParam(value = "code") String codeKey, Model model) {
+    public ResponseEntity<ResponseBean> getConfirm (@RequestParam(value = "id") long id, @RequestParam(value = "code") String codeKey, Model model) {
     	User fetchUser = userService.findUserById(id);
     	String code = redisStoreService.getVerificationCode(codeKey);
 		ResponseBean respBean = new ResponseBean();

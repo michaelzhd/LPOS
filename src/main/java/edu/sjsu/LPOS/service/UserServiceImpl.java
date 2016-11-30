@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import edu.sjsu.LPOS.domain.User;
 import edu.sjsu.LPOS.repository.UserRepository;
 import edu.sjsu.LPOS.service.UserService;
-import edu.sjsu.LPOS.util.EncryptionUtil;
 
 @Service(value="userService")
 public class UserServiceImpl implements UserService {
@@ -40,7 +39,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public User findUserById(Integer id) {
+	public User findUserById(Long id) {
 		return userRepository.findByUserId(id);
 	}
 }
