@@ -7,13 +7,13 @@ import edu.sjsu.LPOS.domain.User;
 public interface UserService {
 	Iterable<User> listAllUsers();
 	 
-	User getUserById(Integer userId);
+	User getUserById(int userId);
 	
 	User findUserByUsername(String username);
  
 	User saveUser(User user);
  
-    void deleteUser(Integer id);
+    void deleteUser(int id);
     
-    User findUserById(Integer id);
+    User findUserById(int id);
 }

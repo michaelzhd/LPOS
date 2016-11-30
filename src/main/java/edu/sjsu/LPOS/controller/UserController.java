@@ -167,11 +167,13 @@ public class UserController {
 	
 	
     @RequestMapping(value="/register/confirm", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBean> getConfirm (@RequestParam(value = "id") int id, @RequestParam(value = "code") String codeKey, Model model) {
+    public ResponseEntity<ResponseBean> getConfirm (@RequestParam(value = "id") Integer id, @RequestParam(value = "code") Integer code) {
+    	System.out.println();
     	User fetchUser = userService.findUserById(id);
-    	String code = redisStoreService.getVerificationCode(codeKey);
+    	String codeKey = String.valueOf(code);
+    	String codeValue = redisStoreService.getVerificationCode(codeKey);
 		ResponseBean respBean = new ResponseBean();
-    	if(code.equals(codeKey)) {
+    	if(codeKey.equals(codeValue)) {
     		String[] authorityStrings = fetchUser.getAuthorities().split(",");
     		List<String> authorities = new ArrayList<>();
     		for (String authority: authorityStrings) {
