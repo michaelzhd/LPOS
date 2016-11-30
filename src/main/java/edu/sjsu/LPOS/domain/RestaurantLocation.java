@@ -10,7 +10,7 @@ public class RestaurantLocation {
 	@Id
 	private ObjectId id;
 	
-	private Long rid;
+	private Integer rid;
 	
 	private String city;
 	
@@ -25,11 +25,11 @@ public class RestaurantLocation {
 	//	@Field("address")
 	private Address address;
 
-	public Long getRid() {
+	public Integer getRid() {
 		return rid;
 	}
 
-	public void setRid(Long rid) {
+	public void setRid(Integer rid) {
 		this.rid = rid;
 	}
 

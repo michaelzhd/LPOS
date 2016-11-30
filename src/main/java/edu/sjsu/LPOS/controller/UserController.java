@@ -109,7 +109,7 @@ public class UserController {
 	
 	@RequestMapping(value = "/{userId}", method = RequestMethod.PUT)
 	public ResponseEntity<ResponseBean> updateUser(@RequestBody UserRegisterBean userRegisterBean,
-			@PathVariable("userId") long userId) {
+			@PathVariable("userId") int userId) {
 		ResponseBean respBean = new ResponseBean();
 		Map<String, Object> map = new HashMap<>();
 		User fetchUser = userService.findUserById(userId);
@@ -167,7 +167,7 @@ public class UserController {
 	
 	
     @RequestMapping(value="/register/confirm", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBean> getConfirm (@RequestParam(value = "id") long id, @RequestParam(value = "code") String codeKey, Model model) {
+    public ResponseEntity<ResponseBean> getConfirm (@RequestParam(value = "id") int id, @RequestParam(value = "code") String codeKey, Model model) {
     	User fetchUser = userService.findUserById(id);
     	String code = redisStoreService.getVerificationCode(codeKey);
 		ResponseBean respBean = new ResponseBean();

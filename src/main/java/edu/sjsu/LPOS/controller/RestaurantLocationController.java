@@ -70,7 +70,7 @@ public class RestaurantLocationController {
 			@RequestParam(value="latitude") float latitude, @RequestParam(value="distance") int distance) {
 		List<RestaurantLocation> restaurantLocations = 
 				restaurantLocationService.findRestaurantsByMileDistance(longitude, latitude, distance);
-		List<Long> restaurantIds = new ArrayList<>();
+		List<Integer> restaurantIds = new ArrayList<>();
 		for (RestaurantLocation restLocation: restaurantLocations) {
 			restaurantIds.add(restLocation.getRid());
 		}

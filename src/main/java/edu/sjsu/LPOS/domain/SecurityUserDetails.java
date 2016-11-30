@@ -12,7 +12,7 @@ public class SecurityUserDetails implements UserDetails{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private Long id;
+	private Integer id;
 	private String username;
 	private String password;
 	private String email;
@@ -28,7 +28,7 @@ public class SecurityUserDetails implements UserDetails{
 	
 	
 
-	public SecurityUserDetails(Long id, String username, String password, String email,
+	public SecurityUserDetails(Integer id, String username, String password, String email,
 			Collection<? extends GrantedAuthority> authorities) {
 		super();
 		this.id = id;
@@ -39,7 +39,7 @@ public class SecurityUserDetails implements UserDetails{
 	}
 
 
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -73,7 +73,7 @@ public class SecurityUserDetails implements UserDetails{
 		return this.password;
 	}
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

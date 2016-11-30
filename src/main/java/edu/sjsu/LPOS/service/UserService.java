@@ -7,7 +7,7 @@ import edu.sjsu.LPOS.domain.User;
 public interface UserService {
 	Iterable<User> listAllUsers();
 	 
-	User getUserById(Integer id);
+	User getUserById(Integer userId);
 	
 	User findUserByUsername(String username);
  
@@ -15,5 +15,5 @@ public interface UserService {
  
     void deleteUser(Integer id);
     
-    User findUserById(Long id);
+    User findUserById(Integer id);
 }
