@@ -20,11 +20,9 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Entity
-@Table(name = "tableinfo")
+
 public class TableInfo {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+
 	private Integer id;
 	private Integer capacity;
 	

@@ -37,15 +37,9 @@ import edu.sjsu.LPOS.service.UserService;
 @RequestMapping(value="/table")
 @RestController
 public class TableRestController {
-	
-	@Autowired
-	private TimeSlotService timeSlotService;
-	@Autowired
-	private TableInfoService tableInfoService;
+
 	@Autowired
 	private RestaurantService restaurantService;
-	@Autowired
-	private UserService userService;
 	@Autowired
 	private TableReserveService tableReserveService;
 	
