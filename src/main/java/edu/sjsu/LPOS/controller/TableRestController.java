@@ -85,29 +85,6 @@ public class TableRestController {
 //		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 //	}
 //	 bgtry55666y7uh7jnmk bvggby
-	@RequestMapping(value = "/timeslot", method = RequestMethod.POST) 
-	public ResponseEntity<ResponseDTO> createTimeSlot (@RequestBody TimeSlot timeslot) throws SQLException {
-		ResponseDTO response = new ResponseDTO();
-		HttpStatus status = HttpStatus.OK;
-		try {
-			TimeSlot slot = timeSlotService.saveTimeSlot(timeslot);
-			response.setData(slot);
-		} catch(Exception e) {
-			response.setMessage(e.getCause().getMessage());
-			status = HttpStatus.EXPECTATION_FAILED;
-			response.setStatus(HttpStatus.EXPECTATION_FAILED.name());
-		}
-		return new ResponseEntity<ResponseDTO>(response, status);
-	}
-	
-	@RequestMapping(value = "/timeslot", method = RequestMethod.GET) 
-	public ResponseEntity<ResponseDTO> getAllAvailableTimeSlot () {
-		ResponseDTO response = new ResponseDTO();
-		Iterable<TimeSlot> timeslots= timeSlotService.getAllTimeSlot();
-		response.setData(timeslots);
-		response.setStatus(HttpStatus.OK.name());
-		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
-	}
 	
 	@RequestMapping(value = "/reserve/{restaurantId}", method = RequestMethod.POST) 
 	public ResponseEntity<ResponseDTO> createTableReserveInfo (

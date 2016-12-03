@@ -1,5 +1,6 @@
 package edu.sjsu.LPOS.controller;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.sjsu.LPOS.DTO.ResponseDTO;
 import edu.sjsu.LPOS.domain.Favorite;
 import edu.sjsu.LPOS.domain.Restaurant;
+import edu.sjsu.LPOS.domain.TimeSlot;
 import edu.sjsu.LPOS.domain.User;
 import edu.sjsu.LPOS.service.FavoriteService;
 import edu.sjsu.LPOS.service.RestaurantService;
+import edu.sjsu.LPOS.service.TimeSlotService;
 
 
 
@@ -32,6 +35,8 @@ public class RestaurantRestController {
 	private RestaurantService restaurantService;
 	@Autowired
 	private FavoriteService favoriteService;
+	@Autowired
+	private TimeSlotService timeSlotService;
 	
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ResponseEntity<ResponseDTO> getRestaurant (
@@ -55,7 +60,7 @@ public class RestaurantRestController {
 			}
 			for(Restaurant r : restaurant) {
 				r.setFavoriteFlag(favorites);
-				r.changeTimeSlotFormat();
+				r.setTimeSlotsForAPI();
 			}
 			
 		} else if(type != null && type.length() != 0) {
@@ -66,13 +71,13 @@ public class RestaurantRestController {
 			}
 			for(Restaurant r : restaurant) {
 				r.setFavoriteFlag(favorites);
-				r.changeTimeSlotFormat();
+				r.setTimeSlotsForAPI();
 			}
 		} else {
 			restaurant = (List<Restaurant>) restaurantService.getAllRestaurant();
 			for(Restaurant r : restaurant) {
 				r.setFavoriteFlag(favorites);
-				r.changeTimeSlotFormat();
+				r.setTimeSlotsForAPI();
 			}
 		}
 		response.setData(restaurant);
@@ -98,7 +103,7 @@ public class RestaurantRestController {
 			response.setStatus(HttpStatus.NOT_FOUND.name());
 			return new ResponseEntity<ResponseDTO>(response, HttpStatus.NOT_FOUND);
 		}
-		r.changeTimeSlotFormat();
+		r.setTimeSlotsForAPI();
 		response.setData(r);
 		response.setStatus(HttpStatus.OK.name());
 	    return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
@@ -113,10 +118,45 @@ public class RestaurantRestController {
 			response.setStatus(HttpStatus.CONFLICT.name());
 			return new ResponseEntity<ResponseDTO>(response, HttpStatus.CONFLICT);
 		}
+		List<TimeSlot> listSlot = new ArrayList<TimeSlot>();
+		for(String time : restaurant.getSlots()) {
+			TimeSlot s = timeSlotService.getTimeSlotByTime(time);
+			if(s == null) {
+				s = new TimeSlot();
+				s.setTimeSlot(time);
+				s = timeSlotService.saveTimeSlot(s);
+			}
+			listSlot.add(s);
+		}
+		restaurant.setTimeslot(listSlot);
 		Restaurant r = restaurantService.saveRestaurant(restaurant);
 		response.setStatus(HttpStatus.OK.name());
 		response.setData(r);
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 		
+	}
+	
+	@RequestMapping(value = "/timeslot", method = RequestMethod.POST) 
+	public ResponseEntity<ResponseDTO> createTimeSlot (@RequestBody TimeSlot timeslot) throws SQLException {
+		ResponseDTO response = new ResponseDTO();
+		HttpStatus status = HttpStatus.OK;
+		try {
+			TimeSlot slot = timeSlotService.saveTimeSlot(timeslot);
+			response.setData(slot);
+		} catch(Exception e) {
+			response.setMessage(e.getCause().getMessage());
+			status = HttpStatus.EXPECTATION_FAILED;
+			response.setStatus(HttpStatus.EXPECTATION_FAILED.name());
+		}
+		return new ResponseEntity<ResponseDTO>(response, status);
+	}
+	
+	@RequestMapping(value = "/timeslot", method = RequestMethod.GET) 
+	public ResponseEntity<ResponseDTO> getAllAvailableTimeSlot () {
+		ResponseDTO response = new ResponseDTO();
+		Iterable<TimeSlot> timeslots= timeSlotService.getAllTimeSlot();
+		response.setData(timeslots);
+		response.setStatus(HttpStatus.OK.name());
+		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 	}
 }

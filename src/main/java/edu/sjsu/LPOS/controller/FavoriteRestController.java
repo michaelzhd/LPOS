@@ -42,26 +42,27 @@ public class FavoriteRestController {
 			response.setStatus(HttpStatus.NOT_FOUND.name());
 			return new ResponseEntity<ResponseDTO>(response, HttpStatus.NOT_FOUND);
 		}
-		System.out.println(user);
-
 		
 		Favorite favorite = favoriteService.getFavoriteByUserIdAndRestaurantId(user.getId(), restaurantId);
 		if(favorite != null) {
+			favorite.getRestaurant().setTimeSlotsForAPI();
+			favorite.getRestaurant().setIsfavorite(true);
 			response.setStatus(HttpStatus.OK.name());
-			response.setData(favorite);
+			response.setData(favorite.getRestaurant());
 			return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 		}
 
 		Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
+		
 		if(restaurant == null) {
 			response.setStatus(HttpStatus.NOT_FOUND.name());
 			return new ResponseEntity<ResponseDTO>(response, HttpStatus.NOT_FOUND);
 		}
-		
+		restaurant.setTimeSlotsForAPI();
 		Favorite f = favoriteService.saveFavorite(new Favorite(user, restaurant));
 		f.getRestaurant().setIsfavorite(true);
 		response.setStatus(HttpStatus.OK.name());
-		response.setData(f);
+		response.setData(f.getRestaurant());
 		
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 	}
@@ -81,7 +82,10 @@ public class FavoriteRestController {
 		}
 		List<Restaurant> restaurants = new ArrayList<Restaurant>();
 		for(Favorite f : list) {
-			restaurants.add(f.getRestaurant());
+			Restaurant r = f.getRestaurant();
+			r.setTimeSlotsForAPI();
+			r.setIsfavorite(true);
+			restaurants.add(r);
 		}
 		response.setData(restaurants);
 		response.setStatus(HttpStatus.OK.name());

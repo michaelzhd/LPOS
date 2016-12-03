@@ -33,11 +33,11 @@ public class TimeSlot {
 //				joinColumns={@JoinColumn(name="timeslot_id", referencedColumnName="id")},
 //				inverseJoinColumns={@JoinColumn(name="tableinfo_id", referencedColumnName="id")})
 	@ManyToMany(cascade = {CascadeType.ALL})
-	@JoinTable(name="table_timeslot", 
-				joinColumns={@JoinColumn(name="timeslot_id", referencedColumnName="id")}, 
-				inverseJoinColumns={@JoinColumn(name="tableinfo_id", referencedColumnName="id")})
+	@JoinTable(name="restaurant_timeslot", 
+				joinColumns={@JoinColumn(name="timeslot_id", referencedColumnName="id", updatable = true, insertable = true)}, 
+				inverseJoinColumns={@JoinColumn(name="restaurant_id", referencedColumnName="id", updatable = true, insertable = true)})
 	@JsonIgnore
-	private Set<TableInfo> tableinfo = new HashSet<TableInfo>();
+	private Set<Restaurant> restaurant = new HashSet<Restaurant>();
 
 //	@ManyToOne
 //	@JoinColumn(name="restaurant_id", referencedColumnName="id", nullable = false, updatable = true, insertable = true)
@@ -66,12 +66,12 @@ public class TimeSlot {
 		this.timeSlot = timeSlot;
 	}
 
-	public Set<TableInfo> getTableinfo() {
-		return tableinfo;
+	public Set<Restaurant> getRestaurant() {
+		return restaurant;
 	}
 
-	public void setTableinfo(Set<TableInfo> tableinfo) {
-		this.tableinfo = tableinfo;
+	public void setRestaurant(Set<Restaurant> restaurant) {
+		this.restaurant = restaurant;
 	}
 
 //	public Restaurant getRestaurant() {
