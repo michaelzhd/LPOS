@@ -16,7 +16,7 @@ public class HtmlPageComposer {
                 + mailServiceServer
                 + ":"
                 + mailServicePort
-                + "/user/register/confirm?id=" + user.getUserId() + "&code="+ code +"'>Click me</a> <br />"
+                + "/user/register/confirm?id=" + user.getId() + "&code="+ code +"'>Click me</a> <br />"
                 + "The link above will expire in "
                 + expireInHours
                 + " hours"

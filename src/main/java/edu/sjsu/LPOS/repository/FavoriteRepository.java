@@ -9,7 +9,7 @@ import edu.sjsu.LPOS.domain.Favorite;
 
 public interface FavoriteRepository extends CrudRepository<Favorite, Integer>{
 	
-	List<Favorite> findByUser(Integer id);
+	List<Favorite> findByUser_id(Integer id);
 	
-	Favorite findByUserAndRestaurant_id(Integer userId, Integer restaurantid);
+	Favorite findByUser_idAndRestaurant_id(Integer userId, Integer restaurantid);
 }

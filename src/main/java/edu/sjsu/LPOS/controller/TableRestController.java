@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.sjsu.LPOS.DTO.ReservationDTO;
 import edu.sjsu.LPOS.DTO.ResponseDTO;
 import edu.sjsu.LPOS.domain.Restaurant;
 import edu.sjsu.LPOS.domain.TableInfo;
@@ -103,25 +104,43 @@ public class TableRestController {
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/reserve/{tableId}", method = RequestMethod.POST) 
-	public ResponseEntity<ResponseDTO> createTableReserveInfo (HttpServletRequest request, @PathVariable("tableId") Integer tableId, @RequestBody TableReserve tableReserve) {
+	@RequestMapping(value = "/reserve/{restaurantId}", method = RequestMethod.POST) 
+	public ResponseEntity<ResponseDTO> createTableReserveInfo (HttpServletRequest request, @PathVariable("restaurantId") Integer restaurantId, @RequestBody ReservationDTO reservationDTO) {
 		ResponseDTO response = new ResponseDTO();
-		TableInfo tableInfo = tableInfoService.getTableInfoByTableId(tableId);
+		Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
+		if(restaurant == null) {
+			response.setMessage("Not find restaurant by id");
+			response.setStatus(HttpStatus.BAD_REQUEST.name());
+			return new ResponseEntity<ResponseDTO>(response, HttpStatus.BAD_REQUEST);
+		}
 		
-		tableReserve.setTableInfo(tableInfo);
+		if(reservationSize(restaurant, reservationDTO) < reservationDTO.getPeople()) {
+			response.setMessage("Not enough space to reservation");
+			response.setStatus(HttpStatus.CONFLICT.name());
+			return new ResponseEntity<ResponseDTO>(response, HttpStatus.CONFLICT);
+		}
 		
-		Integer userId = (Integer) request.getAttribute("userId");
-		System.out.println(userId);
-		userId = 1;
-		User user = userService.getUserById(userId);
-		tableReserve.setUser(user);
+		User user = (User) request.getAttribute("user");
 		
+		TableReserve tableReserve = new TableReserve(user, restaurant, reservationDTO);
+
 		tableReserveService.createReserve(tableReserve);
 		
 		response.setData(tableReserve);
 		response.setStatus(HttpStatus.OK.name());
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 	}
+	
+	private int reservationSize(Restaurant restaurant, ReservationDTO reservationDTO) {
+		List<TableReserve> list = tableReserveService.findTableReservationByRestaurantIdAndDate(restaurant.getId(), reservationDTO.getDate(), reservationDTO.getTimeSlot());
+		int sum = 0;
+		for(TableReserve t: list ) {
+			sum += t.getPeople();
+		}
+		System.out.println("Remain capacity["+sum+"] in restaurant: " + restaurant.toString());
+		return restaurant.getCapacity() - sum;
+	}
+	
 	
 }
 

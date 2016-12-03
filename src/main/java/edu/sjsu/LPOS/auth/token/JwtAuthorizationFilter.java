@@ -18,10 +18,16 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import edu.sjsu.LPOS.domain.User;
+import edu.sjsu.LPOS.service.UserService;
+
 
 public class JwtAuthorizationFilter extends AbstractAuthenticationProcessingFilter{
 	
 	@Autowired private AuthenticationFailureHandler failureHandler;
+	
+	@Autowired
+    private UserService userService;
 	
 	public JwtAuthorizationFilter(RequestMatcher matcher) {
 		super(matcher);
@@ -48,6 +54,8 @@ public class JwtAuthorizationFilter extends AbstractAuthenticationProcessingFilt
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authResult);
         SecurityContextHolder.setContext(context);
+        User user = userService.findUserByUsername(String.valueOf(context.getAuthentication().getPrincipal()));
+        request.setAttribute("user", user);
         chain.doFilter(request, response);
     }
 

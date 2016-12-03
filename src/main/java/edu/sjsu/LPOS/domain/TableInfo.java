@@ -32,8 +32,8 @@ public class TableInfo {
 //	private String orderEndTime;
 //	private String startTime;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tableinfo")
-	private List<TableReserve> tableReserve = new ArrayList<>();
+//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tableinfo")
+	//private List<TableReserve> tableReserve = new ArrayList<>();
 	
 	@ManyToOne
 	@JoinColumn(name="restaurant_id", referencedColumnName="id")
@@ -63,13 +63,13 @@ public class TableInfo {
 		this.slots = slots;
 	}
 
-	public List<TableReserve> getTableReserve() {
-		return tableReserve;
-	}
-
-	public void setTableReserve(List<TableReserve> tableReserve) {
-		this.tableReserve = tableReserve;
-	}	
+//	public List<TableReserve> getTableReserve() {
+//		return tableReserve;
+//	}
+//
+//	public void setTableReserve(List<TableReserve> tableReserve) {
+//		this.tableReserve = tableReserve;
+//	}	
 //	@ManyToOne
 //	@JoinColumn(name="owner_id", referencedColumnName="id")
 //	private User user;

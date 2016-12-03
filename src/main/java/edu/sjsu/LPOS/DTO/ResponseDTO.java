@@ -2,6 +2,7 @@ package edu.sjsu.LPOS.DTO;
 
 public class ResponseDTO {
 	private String status;
+	
 	private Object data;
 	private String message;
 	

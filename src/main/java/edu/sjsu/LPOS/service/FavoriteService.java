@@ -14,7 +14,7 @@ public class FavoriteService {
 	FavoriteRepository favoriteRepository;
 	
 	public List<Favorite> getFavoriteByUserId(Integer id) {
-		return favoriteRepository.findByUser(id);
+		return favoriteRepository.findByUser_id(id);
 	}
 	
 	public Favorite saveFavorite(Favorite favorite) {
@@ -22,7 +22,7 @@ public class FavoriteService {
 	}
 	
 	public Favorite getFavoriteByUserIdAndRestaurantId(Integer userId, Integer restaurantId) {
-		return favoriteRepository.findByUserAndRestaurant_id(userId, restaurantId);
+		return favoriteRepository.findByUser_idAndRestaurant_id(userId, restaurantId);
 	}
 	
 	public void deleteFavorite(Favorite favorite) {

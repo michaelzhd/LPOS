@@ -11,7 +11,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "restaurant")
@@ -27,6 +31,10 @@ public class Restaurant {
 	private String type;
 	private int capacity;
 	
+	@Transient
+	private boolean isfavorite;
+	
+
 //	@OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
 //	@JoinColumn(name = "menu_id", nullable = true)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
@@ -38,6 +46,17 @@ public class Restaurant {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
 	private List<TableInfo> tableinfo = new ArrayList<>();
 	
+	
+	@Transient
+	public boolean isIsfavorite() {
+		return isfavorite;
+	}
+	@Transient
+	public void setIsfavorite(boolean isfavorite) {
+		this.isfavorite = isfavorite;
+	}
+
+
 	public List<TableInfo> getTableinfo() {
 		return tableinfo;
 	}
@@ -136,6 +155,15 @@ public class Restaurant {
 		System.out.println("changeTimeSlotFormat: "+ this.tableinfo.size()) ;
 		for(TableInfo t : this.tableinfo) {
 			t.setTimeSlotsForAPI();
+		}
+	}
+	
+	public void setFavoriteFlag(List<Favorite> favorites) {
+		for(Favorite f : favorites) {
+			if(f.getRestaurant().getId() == this.id) {
+				this.isfavorite = true;
+				break;
+			}
 		}
 	}
 	

@@ -61,6 +61,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
 			respBean.setStatus("Error");
 			respBean.setMessage("Your input to URL: " 
 			+ request.getRequestURL() + " has caused internal error. Please contact us.");
+			ex.printStackTrace();
 			return new ResponseEntity<ResponseBean>(respBean, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		respBean.setMessage(ex.getMessage());

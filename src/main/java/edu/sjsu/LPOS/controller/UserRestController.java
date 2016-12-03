@@ -39,6 +39,6 @@ public class UserRestController {
 
 	@RequestMapping(value = "/api/user/update", method = RequestMethod.GET)
 	public ResponseEntity<String> update (HttpServletRequest req){
-    	return new ResponseEntity<String>(String.valueOf(req.getAttribute("userId")), HttpStatus.OK);
+    	return new ResponseEntity<String>(String.valueOf(req.getAttribute("user")), HttpStatus.OK);
 	}
 }

@@ -16,11 +16,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "appuser")
 public class User {
+	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer userId;
+    private Integer id;
+	
+    public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    private String username;
+	private String username;
     
 //    @JsonIgnore
     private String password;
@@ -42,28 +50,14 @@ public class User {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public Integer getUserId() {
-		return userId;
-	}
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
+
 	public String getAuthorities() {
 		return authorities;
 	}
 	public void setAuthorities(String authorities) {
 		this.authorities = authorities;
 	}
-	@Override
-	public String toString() {
-    	StringBuilder sb = new StringBuilder();
-    	sb.append("userId: ").append(userId)
-    	  .append("username: ").append(username)
-    	  .append("email: ").append(email)
-    	  .append("phonenumber: ").append(phonenumber)
-    	  .append("authorities: ").append(authorities.toString());
-		return sb.toString();
-	}
+	
 	private String email;
     private String phonenumber;
 
@@ -102,6 +96,12 @@ public class User {
 	}
 	public void setPhonenumber(String phonenumber) {
 		this.phonenumber = phonenumber;
+	}
+	
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", password=" + password + ", authorities="
+				+ authorities + ", address=" + address + ", email=" + email + ", phonenumber=" + phonenumber + "]";
 	}
 
 	

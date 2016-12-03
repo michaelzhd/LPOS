@@ -25,7 +25,7 @@ public class Favorite {
 	private Restaurant restaurant;
 	
 	@OneToOne
-	@JoinColumn(name = "user_id", referencedColumnName="userId")
+	@JoinColumn(name = "user_id", referencedColumnName="id", nullable = false, updatable = true, insertable = true)
 	private User user;
 	
 	public Favorite() {

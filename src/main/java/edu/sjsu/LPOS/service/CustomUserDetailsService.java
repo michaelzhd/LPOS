@@ -33,7 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService{
 //        }
 
         return new SecurityUserDetails(
-                user.getUserId(),
+                user.getId(),
                 user.getUsername(),
                 user.getPassword(),
                 user.getEmail(),
