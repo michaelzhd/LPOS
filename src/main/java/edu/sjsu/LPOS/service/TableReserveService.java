@@ -26,6 +26,9 @@ public class TableReserveService {
 		return tableReserverepository.findByRestaurant_idAndDateAndTimeSlot(restaurantId, date, timeSlot);
 	}
 	
+	public List<TableReserve> findByUserIdAndDate(Integer userId, String start, String end) {
+		return tableReserverepository.findByUserIdAndDate(userId, start, end);
+	}
 //	public Integer reservationNumber(String timeSlot,Date date, Integer restaurantId ) {
 //		return tableReserverepository.sumPeopleByRestaurantIdAndDateAndTimeSlot(timeSlot, date, restaurantId);
 //	}

@@ -2,8 +2,11 @@ package edu.sjsu.LPOS.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
+import edu.sjsu.LPOS.domain.Restaurant;
 import edu.sjsu.LPOS.domain.TableReserve;
 
 
@@ -11,6 +14,7 @@ import edu.sjsu.LPOS.domain.TableReserve;
 public interface TableReserveRepository extends CrudRepository<TableReserve, Integer>{
 	List<TableReserve> findByUser_id(Integer userId);
 	List<TableReserve> findByRestaurant_idAndDateAndTimeSlot(Integer restaurantId, String date, String timeSlot);
-//	@Query("SELECT SUM(t.people) FROM TableReserve t where t.timeSlot=:timeSlot and t.date=:date and t.restaurant_id=:restaurantId")
-//    Integer sumPeopleByRestaurantIdAndDateAndTimeSlot(@Param("timeSlot") String timeSlot, @Param("date") Date date, @Param("restaurantId") Integer restaurantId);
+	@Query("SELECT t FROM TableReserve t where t.user.id=:userId and t.date>=:start and t.date<=:end")
+    List<TableReserve> findByUserIdAndDate(@Param("userId") Integer userId, @Param("start") String start, @Param("end") String end);	
+
 }

@@ -20,8 +20,7 @@ public class TableReserve {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
-	
-	
+
 	private String timeSlot;
 	
 	private Integer people;	
