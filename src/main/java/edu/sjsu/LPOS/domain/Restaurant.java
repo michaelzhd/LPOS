@@ -32,7 +32,7 @@ public class Restaurant {
 	private String phonenumber;
 	private String type;
 	private int capacity;
-	
+	private String url;
 	@Transient
 	private boolean isfavorite;
 	
@@ -169,6 +169,12 @@ public class Restaurant {
 	public void setSlots(String[] slots) {
 		this.slots = slots;
 	}	
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
 	@Override
 	public String toString() {
 		return "Restaurant [id=" + id + ", name=" + name + ", address=" + address + ", opentime=" + opentime

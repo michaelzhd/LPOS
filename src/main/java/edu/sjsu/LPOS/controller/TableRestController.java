@@ -20,13 +20,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 
+import edu.sjsu.LPOS.DTO.OrderMenuDTO;
 import edu.sjsu.LPOS.DTO.ReservationDTO;
 import edu.sjsu.LPOS.DTO.ResponseDTO;
+import edu.sjsu.LPOS.domain.Menu;
+import edu.sjsu.LPOS.domain.Order;
 import edu.sjsu.LPOS.domain.Restaurant;
 import edu.sjsu.LPOS.domain.TableInfo;
 import edu.sjsu.LPOS.domain.TableReserve;
 import edu.sjsu.LPOS.domain.TimeSlot;
 import edu.sjsu.LPOS.domain.User;
+import edu.sjsu.LPOS.service.MenuService;
+import edu.sjsu.LPOS.service.OrderService;
 import edu.sjsu.LPOS.service.RestaurantService;
 import edu.sjsu.LPOS.service.TableInfoService;
 import edu.sjsu.LPOS.service.TableReserveService;
@@ -42,7 +47,10 @@ public class TableRestController {
 	private RestaurantService restaurantService;
 	@Autowired
 	private TableReserveService tableReserveService;
-	
+	@Autowired
+	private OrderService orderService;
+	@Autowired
+	private MenuService menuService;
 //	@RequestMapping(value = "/info/{restaurantId}", method = RequestMethod.POST) 
 //	public ResponseEntity<ResponseDTO> createTableInfo (@PathVariable("restaurantId") Integer restaurantId, @RequestBody TableInfo tableinfo) {
 //		ResponseDTO response = new ResponseDTO();
@@ -87,6 +95,7 @@ public class TableRestController {
 								@RequestBody ReservationDTO reservationDTO) {
 		ResponseDTO response = new ResponseDTO();
 		Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
+		System.out.println(reservationDTO);
 		if(restaurant == null) {
 			response.setMessage("Not find restaurant by id");
 			response.setStatus(HttpStatus.BAD_REQUEST.name());
@@ -101,10 +110,22 @@ public class TableRestController {
 		
 		User user = (User) request.getAttribute("user");
 		
-		TableReserve tableReserve = new TableReserve(user, restaurant, reservationDTO);
-
-		tableReserveService.createReserve(tableReserve);
+		List<Order> menu_order = new ArrayList<Order>();
+		double sum = 0;
+		for(OrderMenuDTO menu :  reservationDTO.getMenus()) {
+			Order order = new Order(restaurantId, menu.getMenuId(), menu.getQuatity());
+			menu_order.add(order);
+			Order o = orderService.saveOrder(order);
+			System.out.println(o);
+			Menu m = menuService.getMenuById(menu.getMenuId());
+			sum += m.getPrice() * menu.getQuatity();
+		}
 		
+		TableReserve tableReserve = new TableReserve(user, restaurant, reservationDTO);
+		tableReserve.setPrice(sum);
+		
+		tableReserveService.createReserve(tableReserve);
+		//orderService.saveOrderList(menu_order);
 		response.setData(tableReserve);
 		response.setStatus(HttpStatus.OK.name());
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);

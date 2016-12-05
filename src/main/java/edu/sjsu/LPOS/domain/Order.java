@@ -1,40 +1,52 @@
 package edu.sjsu.LPOS.domain;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "ordertable")
-public class Order {
+@Table(name = "order_menu")
+//@IdClass(OrderId.class)
+public class Order{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer id;
+	private Integer id;	
 	
-	private String menu;
-	//table reserve id
-//	@OneToOne
-//	@JoinColumn(name = "tablereserve_id", foreignKey = @ForeignKey(name = "FK_TABLEID"))
-//	private TableReserve tableReserve;
+	private Integer tableReserveId;
 	
-	//menu id many to many
+	private Integer menuId;
 	
+	private Integer quatity;
 	
-//	@OneToOne
-//	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_USERID"))
-//	private User user;
-
-	public String getMenu() {
-		return menu;
+	public Order() {
+		
 	}
+	
+	public Order(Integer tableReserveId, Integer menuId, Integer quatity) {
+		this.tableReserveId = tableReserveId;
+		this.menuId = menuId;
+		this.quatity = quatity;
+	}
+	
+//	@ManyToOne
+//	@JoinColumn(name = "tableReserveId", updatable = false, insertable = false, referencedColumnName = "id")
+//	private TableReserve tableReserve;
+//	
+//	@ManyToOne
+//	@JoinColumn(name = "menuId", updatable = false, insertable = false, referencedColumnName = "id")
+//	private Menu menu;
 
-	public void setMenu(String menu) {
-		this.menu = menu;
+	public Integer getTableReserveId() {
+		return tableReserveId;
 	}
 
 	public Integer getId() {
@@ -45,21 +57,31 @@ public class Order {
 		this.id = id;
 	}
 
-//	public TableReserve getTableReserve() {
-//		return tableReserve;
-//	}
-//
-//	public void setTableReserve(TableReserve tableReserve) {
-//		this.tableReserve = tableReserve;
-//	}
-//
-//	public User getUser() {
-//		return user;
-//	}
-//
-//	public void setUser(User user) {
-//		this.user = user;
-//	}
-	
+	public void setTableReserveId(Integer tableReserveId) {
+		this.tableReserveId = tableReserveId;
+	}
+
+	public Integer getMenuId() {
+		return menuId;
+	}
+
+	public void setMenuId(Integer menuId) {
+		this.menuId = menuId;
+	}
+
+	public Integer getQuatity() {
+		return quatity;
+	}
+
+	public void setQuatity(Integer quatity) {
+		this.quatity = quatity;
+	}
+
+	@Override
+	public String toString() {
+		return "Order [id=" + id + ", tableReserveId=" + tableReserveId + ", menuId=" + menuId + ", quatity=" + quatity
+				+ "]";
+	}
+
 	
 }

@@ -11,6 +11,9 @@ public class MenuService {
 	@Autowired
 	MenuRepository menuRepository;
 	
+	public Menu getMenuById(Integer id) {
+		return menuRepository.findOne(id);
+	}
 	public Menu getMenuByRestaurantId(Integer id) {
 		return menuRepository.findByRestaurant_id(id);
 	}

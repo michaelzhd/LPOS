@@ -1,12 +1,29 @@
 package edu.sjsu.LPOS.DTO;
 
+import java.util.List;
+
 public class ReservationDTO {
 	
 	private String date;
 	private String timeSlot;
 	private Integer people;
 	private boolean isPrivate;
+	private boolean takeOut;
+	private List<OrderMenuDTO> menus;
+
 	
+	public boolean getTakeOut() {
+		return takeOut;
+	}
+	public void setTakeOut(boolean takeOut) {
+		this.takeOut = takeOut;
+	}
+	public List<OrderMenuDTO> getMenus() {
+		return menus;
+	}
+	public void setMenus(List<OrderMenuDTO> menus) {
+		this.menus = menus;
+	}
 	public String getDate() {
 		return date;
 	}
@@ -35,7 +52,8 @@ public class ReservationDTO {
 	@Override
 	public String toString() {
 		return "ReservationDTO [date=" + date + ", timeSlot=" + timeSlot + ", people=" + people + ", isPrivate="
-				+ isPrivate + "]";
+				+ isPrivate + ", menus=" + menus + "]";
 	}
+	
 
 }
