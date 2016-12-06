@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 
+import edu.sjsu.LPOS.DTO.MenuDTO;
 import edu.sjsu.LPOS.DTO.OrderMenuDTO;
 import edu.sjsu.LPOS.DTO.ReservationDTO;
+import edu.sjsu.LPOS.DTO.ReservationResponseDTO;
 import edu.sjsu.LPOS.DTO.ResponseDTO;
 import edu.sjsu.LPOS.domain.Menu;
 import edu.sjsu.LPOS.domain.Order;
@@ -94,6 +96,7 @@ public class TableRestController {
 								@PathVariable("restaurantId") Integer restaurantId, 
 								@RequestBody ReservationDTO reservationDTO) {
 		ResponseDTO response = new ResponseDTO();
+		ReservationResponseDTO data = new ReservationResponseDTO();
 		Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
 		System.out.println(reservationDTO);
 		if(restaurant == null) {
@@ -101,35 +104,45 @@ public class TableRestController {
 			response.setStatus(HttpStatus.BAD_REQUEST.name());
 			return new ResponseEntity<ResponseDTO>(response, HttpStatus.BAD_REQUEST);
 		}
-		
-		if(reservationSize(restaurant, reservationDTO.getDate(), reservationDTO.getTimeSlot()) < reservationDTO.getPeople()) {
-			response.setMessage("Not enough space to reservation");
-			response.setStatus(HttpStatus.CONFLICT.name());
-			return new ResponseEntity<ResponseDTO>(response, HttpStatus.CONFLICT);
+		data.setRestaurant(restaurant);
+		if(!reservationDTO.getTakeOut()) {
+			if(reservationSize(restaurant, reservationDTO.getDate(), reservationDTO.getTimeSlot()) < reservationDTO.getPeople()) {
+				response.setMessage("Not enough space to reservation");
+				response.setStatus(HttpStatus.CONFLICT.name());
+				return new ResponseEntity<ResponseDTO>(response, HttpStatus.CONFLICT);
+			}
 		}
-		
 		User user = (User) request.getAttribute("user");
-		
-		List<Order> menu_order = new ArrayList<Order>();
-		double sum = 0;
-		for(OrderMenuDTO menu :  reservationDTO.getMenus()) {
-			Order order = new Order(restaurantId, menu.getMenuId(), menu.getQuatity());
-			menu_order.add(order);
-			Order o = orderService.saveOrder(order);
-			System.out.println(o);
-			Menu m = menuService.getMenuById(menu.getMenuId());
-			sum += m.getPrice() * menu.getQuatity();
-		}
-		
 		TableReserve tableReserve = new TableReserve(user, restaurant, reservationDTO);
-		tableReserve.setPrice(sum);
-		
+		tableReserve = tableReserveService.createReserve(tableReserve);
+		List<MenuDTO> menu_order = new ArrayList<MenuDTO>();
+		if(reservationDTO.getTakeOut()) {
+			double sum = 0;
+			tableReserve.setTakeOut(true);
+			for(OrderMenuDTO menu :  reservationDTO.getMenus()) {
+				Order order = new Order(tableReserve.getId(), menu.getMenuId(), menu.getQuatity());
+				Order o = orderService.saveOrder(order);
+				System.out.println(o);
+				Menu m = menuService.getMenuById(menu.getMenuId());
+				sum += m.getPrice() * menu.getQuatity();
+				MenuDTO menuDTO = new MenuDTO(m, menu.getQuatity());
+				menu_order.add(menuDTO);
+			}
+			tableReserve.setPrice(sum);
+			
+		}
+		data.setReservation(tableReserve);
+		if(reservationDTO.getTakeOut()) {
+			data.setMenus(menu_order);
+		}
+		System.out.println(data);
 		tableReserveService.createReserve(tableReserve);
 		//orderService.saveOrderList(menu_order);
-		response.setData(tableReserve);
+		response.setData(data);
 		response.setStatus(HttpStatus.OK.name());
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 	}
+	
 	
 	@RequestMapping(value = "/reserve", method = RequestMethod.GET) 
 	public ResponseEntity<ResponseDTO> getTableReserveInfo (
@@ -144,6 +157,8 @@ public class TableRestController {
 		if(end == null) {
 			end = "9999-99-99";
 		}
+		List<ReservationResponseDTO> reservationResponseDTO = new ArrayList<>();
+		
 		List<TableReserve> tableReserve = tableReserveService.findByUserIdAndDate(user.getId(), start, end);
 		System.out.println(tableReserve);
 		if(tableReserve == null || tableReserve.size() == 0) {
@@ -152,7 +167,20 @@ public class TableRestController {
 			return new ResponseEntity<ResponseDTO>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		response.setData(tableReserve);
+		for(TableReserve t: tableReserve) {
+			ReservationResponseDTO r = new ReservationResponseDTO(t.getRestaurant(), t);
+			List<Order> orders = orderService.getMenuListByReservationId(t.getId());
+			List<MenuDTO> menus = new ArrayList<>();
+			for(Order o : orders) {
+				Menu m = menuService.getMenuById(o.getMenuId());
+				MenuDTO menuDTO = new MenuDTO(m, o.getQuatity());
+				menus.add(menuDTO);
+			}
+			r.setMenus(menus);
+			reservationResponseDTO.add(r);
+		}
+			
+		response.setData(reservationResponseDTO);
 		response.setStatus(HttpStatus.OK.name());
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 	}

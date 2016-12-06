@@ -9,8 +9,16 @@ public class ReservationDTO {
 	private Integer people;
 	private boolean isPrivate;
 	private boolean takeOut;
+	private double price;
 	private List<OrderMenuDTO> menus;
 
+	
+	public double getPrice() {
+		return price;
+	}
+	public void setPrice(double price) {
+		this.price = price;
+	}
 	
 	public boolean getTakeOut() {
 		return takeOut;
