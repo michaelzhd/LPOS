@@ -35,7 +35,8 @@ public class Restaurant {
 	private String url;
 	@Transient
 	private boolean isfavorite;
-	
+	@Transient
+	private double distance;
 
 //	@OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
 //	@JoinColumn(name = "menu_id", nullable = true)
@@ -188,13 +189,6 @@ public class Restaurant {
 				+ ", description=" + description + ", phonenumber=" + phonenumber + ", capacity=" + capacity + "]";
 	}
 	
-//	public void changeTimeSlotFormat() {
-//		System.out.println("changeTimeSlotFormat: "+ this.timeslot.size()) ;
-//		for(TableInfo t : this.tableinfo) {
-//			t.setTimeSlotsForAPI();
-//		}
-//	}
-	
 	public void setTimeSlotsForAPI() {
 		String[] s = new String[this.timeslot.size()];
 		for(int i = 0; i < this.timeslot.size(); i++) {
@@ -212,5 +206,14 @@ public class Restaurant {
 			}
 		}
 	}
+	
+	public double getDistance() {
+		return distance;
+	}
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
+	
+	
 	
 }

@@ -11,10 +11,10 @@ import edu.sjsu.LPOS.domain.Restaurant;
 
 public interface RestaurantRepository extends CrudRepository<Restaurant, Integer>{
 	
-	Restaurant findByName(String name);
+	List<Restaurant> findByName(String name);
 	Restaurant findById(Integer id);
-	Restaurant findByType(String type);
-	
+	List<Restaurant> findByType(String type);
+	Restaurant findByAddress(String address);
 	@Query("SELECT r FROM Restaurant r where r.name LIKE %:key%")
     List<Restaurant> findByRestaurantContainsName(@Param("key") String name);
 	

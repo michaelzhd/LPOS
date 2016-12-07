@@ -16,14 +16,18 @@ public class RestaurantService {
 	@Autowired
 	private RestaurantRepository restaurantRepository;
 	
-	public Restaurant getRestaurantByName(String name) {
+	public List<Restaurant> getRestaurantByName(String name) {
 		return restaurantRepository.findByName(name);
 	}
 
-	public Restaurant getRestaurantByType(String type) {
+	public List<Restaurant> getRestaurantByType(String type) {
 		return restaurantRepository.findByType(type);
 	}
 	
+	public Restaurant getRestaurantByAddress(String address) {
+		return restaurantRepository.findByAddress(address);
+	}
+
 	public Restaurant getRestaurantById(int id) {
 		return restaurantRepository.findOne(id);
 	}

@@ -126,8 +126,9 @@ public class RestaurantRestController {
 	public ResponseEntity<ResponseDTO> createRestaurant (@RequestBody Restaurant restaurant) {
 		ResponseDTO response = new ResponseDTO();
 
-		if(restaurantService.getRestaurantByName(restaurant.getName()) != null) {
+		if(restaurantService.getRestaurantByAddress(restaurant.getAddress()) != null) {
 			response.setStatus(HttpStatus.CONFLICT.name());
+			response.setMessage(restaurant.getName() +"["+restaurant.getAddress()+"]"+ "already exist.");
 			return new ResponseEntity<ResponseDTO>(response, HttpStatus.CONFLICT);
 		}
 		List<TimeSlot> listSlot = new ArrayList<TimeSlot>();
