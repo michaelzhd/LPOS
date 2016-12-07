@@ -54,7 +54,9 @@ public class RestaurantRestController {
 	public ResponseEntity<ResponseDTO> getRestaurant (
 			HttpServletRequest request,
 			@RequestParam(value="name", required=false) String name, 
-			@RequestParam(value="type", required=false) String type){
+			@RequestParam(value="type", required=false) String type,
+			@RequestParam(value="latitude", required=false) Double latitude,
+			@RequestParam(value="longtitude", required=false) Double longtitude){
 		//restaurantService.getRestaurantByName(name);
 		User user = (User) request.getAttribute("user");
 		List<Favorite> favorites = new ArrayList<Favorite>();
@@ -73,6 +75,9 @@ public class RestaurantRestController {
 			for(Restaurant r : restaurant) {
 				r.setFavoriteFlag(favorites);
 				r.setTimeSlotsForAPI();
+				if(latitude != null && longtitude != null) {
+					r.setDistance(calculateDistance(r.getLatitude(), r.getLongtitude(), longtitude, longtitude));
+				}
 			}
 			
 		} else if(type != null && type.length() != 0) {
@@ -84,18 +89,40 @@ public class RestaurantRestController {
 			for(Restaurant r : restaurant) {
 				r.setFavoriteFlag(favorites);
 				r.setTimeSlotsForAPI();
+				if(latitude != null && longtitude != null) {
+					r.setDistance(calculateDistance(r.getLatitude(), r.getLongtitude(), longtitude, longtitude));
+				}
 			}
 		} else {
 			restaurant = (List<Restaurant>) restaurantService.getAllRestaurant();
 			for(Restaurant r : restaurant) {
 				r.setFavoriteFlag(favorites);
 				r.setTimeSlotsForAPI();
+				if(latitude != null && longtitude != null) {
+					r.setDistance(calculateDistance(r.getLatitude(), r.getLongtitude(), longtitude, longtitude));
+				}
 			}
 		}
 		response.setData(restaurant);
 		response.setStatus(HttpStatus.OK.name());
 
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+	}
+	private double EARTH_RADIUS = 6378.137;   
+	private static double rad(double d)   
+	{   
+	     return d * Math.PI / 180.0;   
+	}
+	public double calculateDistance(double lat1, double lng1, double lat2, double lng2 ) {
+		double radLat1 = rad(lat1);   
+	    double radLat2 = rad(lat2);   
+	    double a = radLat1 - radLat2;   
+	    double b = rad(lng1) - rad(lng2);   
+	    double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a/2),2) +   
+	    Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));   
+	    s = s * EARTH_RADIUS;   
+	    s = Math.round(s * 10000) / 10000;   
+	    return s;   
 	}
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -142,10 +169,8 @@ public class RestaurantRestController {
 			listSlot.add(s);
 		}
 		restaurant.setTimeslot(listSlot);
-		Restaurant r = restaurantService.saveRestaurant(restaurant);
-		RestaurantLocation location = new RestaurantLocation();
-		location.setAddress(restaurant.getAddress());
-		location.setRid(r.getId());
+		
+
 		RestTemplate restTemplate = new RestTemplate();
 		final String url = "https://maps.googleapis.com/maps/api/geocode/json?address="+restaurant.getAddress();
 		String result = restTemplate.getForObject(url, String.class);
@@ -154,8 +179,15 @@ public class RestaurantRestController {
 
 	    JSONObject geometry = jsonobject.getJSONObject("geometry");
 	    JSONObject googleloaction = geometry.getJSONObject("location");
-		    
-
+	    
+	    restaurant.setLatitude((double)googleloaction.get("lat"));
+	    restaurant.setLongtitude((double)googleloaction.get("lng"));
+	    
+	    Restaurant r = restaurantService.saveRestaurant(restaurant);    
+	    
+		RestaurantLocation location = new RestaurantLocation();
+		location.setAddress(restaurant.getAddress());
+		location.setRid(r.getId());
 		location.setLocation(new Location((double)googleloaction.get("lng"),(double)googleloaction.get("lat")));
 		restaurantLocationService.createRestaurantLocation(location);
 		System.out.println(location);

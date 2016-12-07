@@ -37,7 +37,8 @@ public class Restaurant {
 	private boolean isfavorite;
 	@Transient
 	private double distance;
-
+	private double latitude;
+	private double longtitude;
 //	@OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
 //	@JoinColumn(name = "menu_id", nullable = true)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
@@ -212,6 +213,18 @@ public class Restaurant {
 	}
 	public void setDistance(double distance) {
 		this.distance = distance;
+	}
+	public double getLatitude() {
+		return latitude;
+	}
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+	public double getLongtitude() {
+		return longtitude;
+	}
+	public void setLongtitude(double longtitude) {
+		this.longtitude = longtitude;
 	}
 	
 	
