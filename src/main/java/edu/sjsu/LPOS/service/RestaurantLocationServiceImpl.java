@@ -28,10 +28,10 @@ public class RestaurantLocationServiceImpl implements RestaurantLocationService 
 		return restaurantLocationRepository.findByRid(rid);
 	}
 
-	@Override
-	public List<RestaurantLocation> findRestaurantsByCity(String city) {
-		return restaurantLocationRepository.findByCity(city);
-	}
+//	@Override
+//	public List<RestaurantLocation> findRestaurantsByCity(String city) {
+//		return restaurantLocationRepository.findByCity(city);
+//	}
 	
 	@Override
 	public List<RestaurantLocation> findAllRestaurant() {
@@ -55,12 +55,12 @@ public class RestaurantLocationServiceImpl implements RestaurantLocationService 
 	}
 
 	@Override
-	public List<RestaurantLocation> findRestaurantsByMileDistance(float longitude, float latitude, int distance) {
+	public List<RestaurantLocation> findRestaurantsByMileDistance(double longitude, double latitude, int distance) {
 		Point from = new Point(longitude, latitude);
 		Distance radius = new Distance(distance, Metrics.MILES);
 		Circle circle = new Circle(from, radius);
 		Query query = new Query();
-		query.addCriteria(Criteria.where("address.location").withinSphere(circle));
+		query.addCriteria(Criteria.where("location").withinSphere(circle));
 		return mongoOperations.find(query, RestaurantLocation.class);
 	}
 

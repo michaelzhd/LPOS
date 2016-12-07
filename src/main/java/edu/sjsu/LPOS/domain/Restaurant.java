@@ -93,13 +93,13 @@ public class Restaurant {
 		this.name = name;
 	}
 
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
+//	public String getAddress() {
+//		return address;
+//	}
+//
+//	public void setAddress(String address) {
+//		this.address = address;
+//	}
 
 	public String getOpentime() {
 		return opentime;
@@ -175,9 +175,16 @@ public class Restaurant {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+	
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
 	@Override
 	public String toString() {
-		return "Restaurant [id=" + id + ", name=" + name + ", address=" + address + ", opentime=" + opentime
+		return "Restaurant [id=" + id + ", name=" + name + ", opentime=" + opentime
 				+ ", description=" + description + ", phonenumber=" + phonenumber + ", capacity=" + capacity + "]";
 	}
 	

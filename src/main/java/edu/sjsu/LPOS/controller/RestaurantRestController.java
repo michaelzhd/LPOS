@@ -2,10 +2,14 @@ package edu.sjsu.LPOS.controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +19,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+import com.google.gson.Gson;
 
 import edu.sjsu.LPOS.DTO.ResponseDTO;
 import edu.sjsu.LPOS.domain.Favorite;
+import edu.sjsu.LPOS.domain.Location;
 import edu.sjsu.LPOS.domain.Restaurant;
+import edu.sjsu.LPOS.domain.RestaurantLocation;
 import edu.sjsu.LPOS.domain.TimeSlot;
 import edu.sjsu.LPOS.domain.User;
 import edu.sjsu.LPOS.service.FavoriteService;
+import edu.sjsu.LPOS.service.RestaurantLocationServiceImpl;
 import edu.sjsu.LPOS.service.RestaurantService;
 import edu.sjsu.LPOS.service.TimeSlotService;
 
@@ -37,6 +47,8 @@ public class RestaurantRestController {
 	private FavoriteService favoriteService;
 	@Autowired
 	private TimeSlotService timeSlotService;
+	@Autowired
+	private RestaurantLocationServiceImpl restaurantLocationService;
 	
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ResponseEntity<ResponseDTO> getRestaurant (
@@ -130,6 +142,22 @@ public class RestaurantRestController {
 		}
 		restaurant.setTimeslot(listSlot);
 		Restaurant r = restaurantService.saveRestaurant(restaurant);
+		RestaurantLocation location = new RestaurantLocation();
+		location.setAddress(restaurant.getAddress());
+		location.setRid(r.getId());
+		RestTemplate restTemplate = new RestTemplate();
+		final String url = "https://maps.googleapis.com/maps/api/geocode/json?address="+restaurant.getAddress();
+		String result = restTemplate.getForObject(url, String.class);
+		JSONObject obj = new JSONObject(result);
+		JSONObject jsonobject = (JSONObject) obj.getJSONArray("results").get(0);
+
+	    JSONObject geometry = jsonobject.getJSONObject("geometry");
+	    JSONObject googleloaction = geometry.getJSONObject("location");
+		    
+
+		location.setLocation(new Location((double)googleloaction.get("lng"),(double)googleloaction.get("lat")));
+		restaurantLocationService.createRestaurantLocation(location);
+		System.out.println(location);
 		response.setStatus(HttpStatus.OK.name());
 		response.setData(r);
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);

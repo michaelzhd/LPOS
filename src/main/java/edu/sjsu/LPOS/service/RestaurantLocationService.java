@@ -8,8 +8,8 @@ public interface RestaurantLocationService {
 	public void createRestaurantLocation(RestaurantLocation restaurantLocation);
 	public void updateRestaurantLocation(long rid, RestaurantLocation restuarantLocation);
 	public RestaurantLocation findRestaurantByRid(long rid);
-	public List<RestaurantLocation> findRestaurantsByCity(String city);
+//	public List<RestaurantLocation> findRestaurantsByCity(String city);
 	public List<RestaurantLocation> findAllRestaurant();
-	public List<RestaurantLocation> findRestaurantsByMileDistance(float longitude, float latitude, int distance);
+	public List<RestaurantLocation> findRestaurantsByMileDistance(double longitude, double latitude, int distance);
 	public void deleteRestaurantLocation(long rid);
 }

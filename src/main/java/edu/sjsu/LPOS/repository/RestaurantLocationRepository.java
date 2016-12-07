@@ -8,6 +8,6 @@ import edu.sjsu.LPOS.domain.RestaurantLocation;
 
 public interface RestaurantLocationRepository extends MongoRepository<RestaurantLocation, String>{
 	RestaurantLocation findByRid(long rid);
-	List<RestaurantLocation> findByCity(String city);
+	
 	
 }
