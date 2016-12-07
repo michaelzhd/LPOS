@@ -1,6 +1,5 @@
 package edu.sjsu.LPOS.controller;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.Gson;
 
 import edu.sjsu.LPOS.DTO.MenuDTO;
 import edu.sjsu.LPOS.DTO.OrderMenuDTO;
@@ -28,17 +26,12 @@ import edu.sjsu.LPOS.DTO.ResponseDTO;
 import edu.sjsu.LPOS.domain.Menu;
 import edu.sjsu.LPOS.domain.Order;
 import edu.sjsu.LPOS.domain.Restaurant;
-import edu.sjsu.LPOS.domain.TableInfo;
 import edu.sjsu.LPOS.domain.TableReserve;
-import edu.sjsu.LPOS.domain.TimeSlot;
 import edu.sjsu.LPOS.domain.User;
 import edu.sjsu.LPOS.service.MenuService;
 import edu.sjsu.LPOS.service.OrderService;
 import edu.sjsu.LPOS.service.RestaurantService;
-import edu.sjsu.LPOS.service.TableInfoService;
 import edu.sjsu.LPOS.service.TableReserveService;
-import edu.sjsu.LPOS.service.TimeSlotService;
-import edu.sjsu.LPOS.service.UserService;
 
 
 @RequestMapping(value="/table")
@@ -159,7 +152,7 @@ public class TableRestController {
 		}
 		List<ReservationResponseDTO> reservationResponseDTO = new ArrayList<>();
 		
-		List<TableReserve> tableReserve = tableReserveService.findByUserIdAndDate(user.getId(), start, end);
+		List<TableReserve> tableReserve = tableReserveService.findByUserIdAndDateAndReservation(user.getId(), start, end);
 		System.out.println(tableReserve);
 		if(tableReserve == null || tableReserve.size() == 0) {
 			response.setMessage("Not find reservation information");
@@ -184,6 +177,9 @@ public class TableRestController {
 		response.setStatus(HttpStatus.OK.name());
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 	}
+
+	
+	
 	
 	private int reservationSize(Restaurant restaurant, String date, String timeSlot) {
 		List<TableReserve> list = tableReserveService.findTableReservationByRestaurantIdAndDate(restaurant.getId(), date, timeSlot);

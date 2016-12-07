@@ -15,6 +15,12 @@ public interface TableReserveRepository extends CrudRepository<TableReserve, Int
 	List<TableReserve> findByUser_id(Integer userId);
 	List<TableReserve> findByRestaurant_idAndDateAndTimeSlot(Integer restaurantId, String date, String timeSlot);
 	@Query("SELECT t FROM TableReserve t where t.user.id=:userId and t.date>=:start and t.date<=:end")
-    List<TableReserve> findByUserIdAndDate(@Param("userId") Integer userId, @Param("start") String start, @Param("end") String end);	
+    List<TableReserve> findByUserIdAndDate(@Param("userId") Integer userId, @Param("start") String start, @Param("end") String end);
+	
+	@Query("SELECT t FROM TableReserve t where t.user.id=:userId and t.date>=:start and t.date<=:end and t.takeOut=true")
+    List<TableReserve> findByUserIdAndDateAndTakeOut(@Param("userId") Integer userId, @Param("start") String start, @Param("end") String end);	
+
+	@Query("SELECT t FROM TableReserve t where t.user.id=:userId and t.date>=:start and t.date<=:end and t.takeOut=false")
+    List<TableReserve> findByUserIdAndDateAndReservation(@Param("userId") Integer userId, @Param("start") String start, @Param("end") String end);	
 
 }

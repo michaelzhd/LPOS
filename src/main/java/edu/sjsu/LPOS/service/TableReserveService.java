@@ -29,6 +29,14 @@ public class TableReserveService {
 	public List<TableReserve> findByUserIdAndDate(Integer userId, String start, String end) {
 		return tableReserverepository.findByUserIdAndDate(userId, start, end);
 	}
+	
+	public List<TableReserve> findByUserIdAndDateAndTakeOut(Integer userId, String start, String end) {
+		return tableReserverepository.findByUserIdAndDateAndTakeOut(userId, start, end);
+	}
+	
+	public List<TableReserve> findByUserIdAndDateAndReservation(Integer userId, String start, String end) {
+		return tableReserverepository.findByUserIdAndDateAndReservation(userId, start, end);
+	}
 //	public Integer reservationNumber(String timeSlot,Date date, Integer restaurantId ) {
 //		return tableReserverepository.sumPeopleByRestaurantIdAndDateAndTimeSlot(timeSlot, date, restaurantId);
 //	}
