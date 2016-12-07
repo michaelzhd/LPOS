@@ -37,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	public static final String REFRESH_ENTRY_POINT = "/user/refresh";
 	public static final String REGISTER_ENTRY_POINT = "/user/register";
 	public static final String REGISTER_CONFIRM_POINT = "/user/register/confirm";
-	public static final String RESTAURANT_ENTRY_POINT = "/restaurant";
+	public static final String RESTAURANT_ENTRY_POINT = "/restaurant/anonymous";
 	
 	@Autowired LoginAuthenticationProvider loginAuthenticationProvider;
 	@Autowired TokenAuthenticationProvider tokenAuthenticationProvider;

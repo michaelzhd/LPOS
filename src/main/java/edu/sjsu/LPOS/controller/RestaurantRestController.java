@@ -51,6 +51,59 @@ public class RestaurantRestController {
 	@Autowired
 	private RestaurantLocationServiceImpl restaurantLocationService;
 	
+	@RequestMapping(value = "/anonymous", method = RequestMethod.GET)
+	public ResponseEntity<ResponseDTO> getRestaurantWithoutLogin (
+			HttpServletRequest request,
+			@RequestParam(value="name", required=false) String name, 
+			@RequestParam(value="type", required=false) String type,
+			@RequestParam(value="latitude", required=false) Double latitude,
+			@RequestParam(value="longtitude", required=false) Double longtitude){
+		//restaurantService.getRestaurantByName(name);
+		
+		ResponseDTO response = new ResponseDTO();
+		List<Restaurant> restaurant = new ArrayList<Restaurant>();
+		if(name != null && name.length() != 0) {
+			restaurant = restaurantService.getRestaurantsContainsName(name);
+			if(restaurant == null || restaurant.size() == 0) {
+				response.setStatus(HttpStatus.NOT_FOUND.name());
+				return new ResponseEntity<ResponseDTO>(response, HttpStatus.NOT_FOUND);
+			}
+			for(Restaurant r : restaurant) {
+				r.setTimeSlotsForAPI();
+				if(latitude != null && longtitude != null) {
+					r.setDistance(calculateDistance(r.getLatitude(), r.getLongtitude(), longtitude, longtitude));
+				}
+			}
+			
+		} else if(type != null && type.length() != 0) {
+			restaurant = restaurantService.getRestaurantsContainsType(type);
+			if(restaurant == null || restaurant.size() == 0) {
+				response.setStatus(HttpStatus.NOT_FOUND.name());
+				return new ResponseEntity<ResponseDTO>(response, HttpStatus.NOT_FOUND);
+			}
+			for(Restaurant r : restaurant) {
+				r.setTimeSlotsForAPI();
+				if(latitude != null && longtitude != null) {
+					r.setDistance(calculateDistance(r.getLatitude(), r.getLongtitude(), longtitude, longtitude));
+				}
+			}
+		} else {
+			restaurant = (List<Restaurant>) restaurantService.getAllRestaurant();
+			for(Restaurant r : restaurant) {
+				r.setTimeSlotsForAPI();
+				if(latitude != null && longtitude != null) {
+					r.setDistance(calculateDistance(r.getLatitude(), r.getLongtitude(), longtitude, longtitude));
+				}
+			}
+		}
+		Collections.sort(restaurant);
+		response.setData(restaurant);
+		response.setStatus(HttpStatus.OK.name());
+
+		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+	}
+	
+	
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ResponseEntity<ResponseDTO> getRestaurant (
 			HttpServletRequest request,
