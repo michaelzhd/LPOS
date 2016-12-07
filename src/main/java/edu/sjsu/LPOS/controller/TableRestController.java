@@ -46,43 +46,7 @@ public class TableRestController {
 	private OrderService orderService;
 	@Autowired
 	private MenuService menuService;
-//	@RequestMapping(value = "/info/{restaurantId}", method = RequestMethod.POST) 
-//	public ResponseEntity<ResponseDTO> createTableInfo (@PathVariable("restaurantId") Integer restaurantId, @RequestBody TableInfo tableinfo) {
-//		ResponseDTO response = new ResponseDTO();
-//		Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
-//		List<TimeSlot> listSlot = new ArrayList<TimeSlot>();
-//		for(String time : tableinfo.getSlots()) {
-//			TimeSlot s = timeSlotService.getTimeSlotByTime(time);
-//			listSlot.add(s);
-//		}
-//		tableinfo.setTimeslot(listSlot);
-//		tableinfo.setRestaurant(restaurant);
-//		TableInfo t = tableInfoService.saveTableInfo(tableinfo);
-//		response.setData(t);
-//		response.setStatus(HttpStatus.OK.name());
-//		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
-//	}
-//	
-//	@RequestMapping(value = "/info/{restaurantId}", method = RequestMethod.GET) 
-//	public ResponseEntity<ResponseDTO> getTableInfo (@PathVariable("restaurantId") Integer restaurantId) {
-//		ResponseDTO response = new ResponseDTO();
-//		List<TableInfo> tableInfos = tableInfoService.getTableInfoByRestaurant_id(restaurantId);
-//
-//		for(TableInfo t : tableInfos) {
-//			String[] str = new String[t.getTimeslot().size()];
-//			int i = 0;
-//			for(TimeSlot s : t.getTimeslot()) {
-//				str[i] = s.getTimeSlot();
-//				i++;
-//			}
-//			t.setSlots(str);
-//		}
-//		response.setData(tableInfos);
-//		response.setStatus(HttpStatus.OK.name());
-//		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
-//	}
-//	 bgtry55666y7uh7jnmk bvggby
-	
+
 	@RequestMapping(value = "/reserve/{restaurantId}", method = RequestMethod.POST) 
 	public ResponseEntity<ResponseDTO> createTableReserveInfo (
 								HttpServletRequest request, 

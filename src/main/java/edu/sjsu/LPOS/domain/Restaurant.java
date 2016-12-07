@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "restaurant")
-public class Restaurant {
+public class Restaurant implements Comparable<Restaurant>{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
@@ -39,16 +39,9 @@ public class Restaurant {
 	private double distance;
 	private double latitude;
 	private double longtitude;
-//	@OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-//	@JoinColumn(name = "menu_id", nullable = true)
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
 	private List<Menu> menu = new ArrayList<>();
-
-//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
-//	private List<ReserveTimeSlot> reserveTimeSlot = new ArrayList<>();
-	
-//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
-//	private List<TableInfo> tableinfo = new ArrayList<>();
 	
 	@ManyToMany(cascade = {CascadeType.ALL})
 	@JoinTable(name="restaurant_timeslot", 
@@ -69,15 +62,6 @@ public class Restaurant {
 	public void setIsfavorite(boolean isfavorite) {
 		this.isfavorite = isfavorite;
 	}
-
-
-//	public List<TableInfo> getTableinfo() {
-//		return tableinfo;
-//	}
-//
-//	public void setTableinfo(List<TableInfo> tableinfo) {
-//		this.tableinfo = tableinfo;
-//	}
 
 	public Integer getId() {
 		return id;
@@ -142,14 +126,6 @@ public class Restaurant {
 	public void setMenu(List<Menu> menu) {
 		this.menu = menu;
 	}
-
-//	public List<ReserveTimeSlot> getReserveTimeSlot() {
-//		return reserveTimeSlot;
-//	}
-//
-//	public void setReserveTimeSlot(List<ReserveTimeSlot> reserveTimeSlot) {
-//		this.reserveTimeSlot = reserveTimeSlot;
-//	}
 	
 	public String getType() {
 		return type;
@@ -227,6 +203,16 @@ public class Restaurant {
 		this.longtitude = longtitude;
 	}
 	
-	
+	public int compareTo(Restaurant compareRestaurant) {
+
+		double compareDistance = ((Restaurant) compareRestaurant).getDistance();
+
+		//ascending distance
+		if(this.distance < compareDistance) {
+			return -1;
+		}
+		return 1;
+		
+	}	
 	
 }

@@ -2,6 +2,7 @@ package edu.sjsu.LPOS.controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class RestaurantRestController {
 			favorites = favoriteService.getFavoriteByUserId(user.getId());
 		}
 		ResponseDTO response = new ResponseDTO();
-		List<Restaurant> restaurant;
+		List<Restaurant> restaurant = new ArrayList<Restaurant>();
 		if(name != null && name.length() != 0) {
 			restaurant = restaurantService.getRestaurantsContainsName(name);
 			if(restaurant == null || restaurant.size() == 0) {
@@ -103,6 +104,7 @@ public class RestaurantRestController {
 				}
 			}
 		}
+		Collections.sort(restaurant);
 		response.setData(restaurant);
 		response.setStatus(HttpStatus.OK.name());
 
