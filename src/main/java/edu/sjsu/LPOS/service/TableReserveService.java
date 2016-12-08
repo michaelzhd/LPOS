@@ -18,6 +18,10 @@ public class TableReserveService {
 		return tableReserverepository.save(tableReserve);
 	}
 	
+	public TableReserve getReserveById(Integer id) {
+		return tableReserverepository.findOne(id);
+	}
+	
 	public List<TableReserve> findTableReservationByUserId(Integer userId) {
 		return tableReserverepository.findByUser_id(userId);
 	}

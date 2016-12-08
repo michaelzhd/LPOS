@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.sjsu.LPOS.DTO.MenuDTO;
+import edu.sjsu.LPOS.DTO.OrderUpdateDTO;
 import edu.sjsu.LPOS.DTO.ReservationResponseDTO;
 import edu.sjsu.LPOS.DTO.ResponseDTO;
 import edu.sjsu.LPOS.domain.Menu;
@@ -80,9 +81,19 @@ public class OrderRestController {
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/checkout", method = RequestMethod.POST) 
-	public ResponseEntity<ResponseDTO> createRestaurant (@RequestBody Restaurant restaurant) {
+	@RequestMapping(value = "/checkout", method = RequestMethod.PUT) 
+	public ResponseEntity<ResponseDTO> checkout (@RequestBody OrderUpdateDTO orderUpdateDTO) {
 		ResponseDTO response = new ResponseDTO();
+		TableReserve tableReserve = tableReserveService.getReserveById(orderUpdateDTO.getOrderId());
+		if(tableReserve == null) {
+			response.setMessage("Not find order");
+			response.setStatus(HttpStatus.NOT_FOUND.name());
+			return new ResponseEntity<ResponseDTO>(response, HttpStatus.NOT_FOUND);
+		}
+		tableReserve.setStatus("completed");
+		tableReserveService.createReserve(tableReserve);
+		response.setData(tableReserve);
+		response.setStatus(HttpStatus.OK.name());
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 	}
 

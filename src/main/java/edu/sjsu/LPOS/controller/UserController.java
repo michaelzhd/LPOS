@@ -21,11 +21,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.sjsu.LPOS.DTO.ResponseDTO;
 import edu.sjsu.LPOS.auth.JwtTokenUtil;
 import edu.sjsu.LPOS.auth.UserAuthorities;
 import edu.sjsu.LPOS.beans.ResponseBean;
 import edu.sjsu.LPOS.beans.UserBean;
 import edu.sjsu.LPOS.beans.UserRegisterBean;
+import edu.sjsu.LPOS.domain.Restaurant;
 import edu.sjsu.LPOS.domain.User;
 import edu.sjsu.LPOS.service.EmailService;
 import edu.sjsu.LPOS.service.RedisStoreService;
@@ -217,5 +219,12 @@ public class UserController {
     	respBean.setStatus("Your account can not be verified.");
     	return new ResponseEntity<ResponseBean>(respBean, HttpStatus.EXPECTATION_FAILED);
     }
+    
+	
+	@RequestMapping(value = "/savecard", method = RequestMethod.POST) 
+	public ResponseEntity<ResponseDTO> saveCreditCardInfo (@RequestBody Restaurant restaurant) {
+		ResponseDTO response = new ResponseDTO();
+		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+	}
 }
 
