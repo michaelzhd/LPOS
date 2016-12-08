@@ -71,6 +71,7 @@ public class TableRestController {
 		}
 		User user = (User) request.getAttribute("user");
 		TableReserve tableReserve = new TableReserve(user, restaurant, reservationDTO);
+		tableReserve.setStatus("processing");
 		tableReserve = tableReserveService.createReserve(tableReserve);
 		List<MenuDTO> menu_order = new ArrayList<MenuDTO>();
 		if(reservationDTO.getTakeOut()) {

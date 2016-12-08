@@ -26,17 +26,6 @@ public class Menu {
 	private double price;
 	private String status;
 	
-//	@OneToMany(mappedBy="menu")
-//	private List<Order> tableReserve;
-//	
-//	public List<Order> getTableReserve() {
-//		return tableReserve;
-//	}
-//
-//	public void setTableReserve(List<Order> tableReserve) {
-//		this.tableReserve = tableReserve;
-//	}
-
 	@Transient
 	@JsonIgnore
 	private Integer restaurantId;

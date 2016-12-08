@@ -48,8 +48,7 @@ public class RestaurantRestController {
 	private FavoriteService favoriteService;
 	@Autowired
 	private TimeSlotService timeSlotService;
-	@Autowired
-	private RestaurantLocationServiceImpl restaurantLocationService;
+
 	
 	@RequestMapping(value = "/anonymous", method = RequestMethod.GET)
 	public ResponseEntity<ResponseDTO> getRestaurantWithoutLogin (
@@ -178,6 +177,7 @@ public class RestaurantRestController {
 	    s = s * EARTH_RADIUS;   
 	    s = Math.round(s * 10000) / 10000;   
 	    return s;   
+
 	}
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -201,54 +201,6 @@ public class RestaurantRestController {
 		response.setData(r);
 		response.setStatus(HttpStatus.OK.name());
 	    return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
-		
-	}
-	
-	@RequestMapping(value = "", method = RequestMethod.POST) 
-	public ResponseEntity<ResponseDTO> createRestaurant (@RequestBody Restaurant restaurant) {
-		ResponseDTO response = new ResponseDTO();
-
-		if(restaurantService.getRestaurantByAddress(restaurant.getAddress()) != null) {
-			response.setStatus(HttpStatus.CONFLICT.name());
-			response.setMessage(restaurant.getName() +"["+restaurant.getAddress()+"]"+ "already exist.");
-			return new ResponseEntity<ResponseDTO>(response, HttpStatus.CONFLICT);
-		}
-		List<TimeSlot> listSlot = new ArrayList<TimeSlot>();
-		for(String time : restaurant.getSlots()) {
-			TimeSlot s = timeSlotService.getTimeSlotByTime(time);
-			if(s == null) {
-				s = new TimeSlot();
-				s.setTimeSlot(time);
-				s = timeSlotService.saveTimeSlot(s);
-			}
-			listSlot.add(s);
-		}
-		restaurant.setTimeslot(listSlot);
-		
-
-		RestTemplate restTemplate = new RestTemplate();
-		final String url = "https://maps.googleapis.com/maps/api/geocode/json?address="+restaurant.getAddress();
-		String result = restTemplate.getForObject(url, String.class);
-		JSONObject obj = new JSONObject(result);
-		JSONObject jsonobject = (JSONObject) obj.getJSONArray("results").get(0);
-
-	    JSONObject geometry = jsonobject.getJSONObject("geometry");
-	    JSONObject googleloaction = geometry.getJSONObject("location");
-	    
-	    restaurant.setLatitude((double)googleloaction.get("lat"));
-	    restaurant.setLongtitude((double)googleloaction.get("lng"));
-	    
-	    Restaurant r = restaurantService.saveRestaurant(restaurant);    
-	    
-		RestaurantLocation location = new RestaurantLocation();
-		location.setAddress(restaurant.getAddress());
-		location.setRid(r.getId());
-		location.setLocation(new Location((double)googleloaction.get("lng"),(double)googleloaction.get("lat")));
-		restaurantLocationService.createRestaurantLocation(location);
-		System.out.println(location);
-		response.setStatus(HttpStatus.OK.name());
-		response.setData(r);
-		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 		
 	}
 	

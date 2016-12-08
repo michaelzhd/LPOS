@@ -38,6 +38,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	public static final String REGISTER_ENTRY_POINT = "/user/register";
 	public static final String REGISTER_CONFIRM_POINT = "/user/register/confirm";
 	public static final String RESTAURANT_ENTRY_POINT = "/restaurant/anonymous";
+	public static final String MANAGEMENT_RESTAURANT_ENTRY_POINT = "/management/restaurant";
+	public static final String MANAGEMENT_ORDER_ENTRY_POINT = "/management/order/.*";
+	public static final String MANAGEMENT_MENU_ENTRY_POINT = "/management/menu";
 	
 	@Autowired LoginAuthenticationProvider loginAuthenticationProvider;
 	@Autowired TokenAuthenticationProvider tokenAuthenticationProvider;
@@ -71,7 +74,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     @Bean
     public JwtAuthorizationFilter jwtFilterRegistrationBean() throws Exception {
     	List<String> pathToSkip = Arrays.asList(LOGIN_ENTRY_POINT,REFRESH_ENTRY_POINT,
-    											REGISTER_ENTRY_POINT, REGISTER_CONFIRM_POINT, RESTAURANT_ENTRY_POINT);
+    											REGISTER_ENTRY_POINT, REGISTER_CONFIRM_POINT,RESTAURANT_ENTRY_POINT,
+    											MANAGEMENT_RESTAURANT_ENTRY_POINT,MANAGEMENT_MENU_ENTRY_POINT, MANAGEMENT_ORDER_ENTRY_POINT);
     	SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathToSkip);
     	JwtAuthorizationFilter filter = new JwtAuthorizationFilter(matcher);
     	filter.setAuthenticationManager(this.authenticationManager);
@@ -93,13 +97,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .antMatcher("/**")
+                //.antMatcher("/**")
                 	.authorizeRequests()
                 		.antMatchers(LOGIN_ENTRY_POINT).permitAll()
                 		.antMatchers(REFRESH_ENTRY_POINT).permitAll()
                 		.antMatchers(REGISTER_ENTRY_POINT).permitAll()
                 		.antMatchers(REGISTER_CONFIRM_POINT).permitAll()
                 		.antMatchers(RESTAURANT_ENTRY_POINT).permitAll()
+                		.antMatchers("/management/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler);

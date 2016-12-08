@@ -43,6 +43,7 @@ public class TableReserve {
 	
 	private double price;
 	
+	private String status;
 	@OneToOne
 	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_USERID"))
 	@JsonIgnore
@@ -157,6 +158,12 @@ public double getPrice() {
 	}
 	public void setPrice(double price) {
 		this.price = price;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	//	public List<Order> getMenus() {
 //		return menus;
