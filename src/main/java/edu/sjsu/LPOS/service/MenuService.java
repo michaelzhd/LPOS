@@ -1,5 +1,7 @@
 package edu.sjsu.LPOS.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,7 @@ public class MenuService {
 	public Menu getMenuById(Integer id) {
 		return menuRepository.findOne(id);
 	}
-	public Menu getMenuByRestaurantId(Integer id) {
+	public List<Menu> getMenuByRestaurantId(Integer id) {
 		return menuRepository.findByRestaurant_id(id);
 	}
 	

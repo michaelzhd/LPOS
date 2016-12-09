@@ -1,6 +1,8 @@
 package edu.sjsu.LPOS.repository;
 
 
+import java.util.List;
+
 import org.springframework.data.repository.CrudRepository;
 
 import edu.sjsu.LPOS.domain.Menu;
@@ -11,7 +13,7 @@ public interface MenuRepository extends CrudRepository<Menu, Integer>{
 	
 	Iterable<Menu> findByStatus(String status);
 	
-	Menu findByRestaurant_id(Integer id);
+	List<Menu> findByRestaurant_id(Integer id);
 	
 	Iterable<Menu> findByRestaurant_idAndStatus(String id, String status);
 	//TODO

@@ -21,6 +21,7 @@ import edu.sjsu.LPOS.DTO.CreateMenuDTO;
 import edu.sjsu.LPOS.DTO.MenuDTO;
 import edu.sjsu.LPOS.DTO.ReservationResponseDTO;
 import edu.sjsu.LPOS.DTO.ResponseDTO;
+import edu.sjsu.LPOS.domain.Favorite;
 import edu.sjsu.LPOS.domain.Location;
 import edu.sjsu.LPOS.domain.Menu;
 import edu.sjsu.LPOS.domain.Order;
@@ -28,6 +29,8 @@ import edu.sjsu.LPOS.domain.Restaurant;
 import edu.sjsu.LPOS.domain.RestaurantLocation;
 import edu.sjsu.LPOS.domain.TableReserve;
 import edu.sjsu.LPOS.domain.TimeSlot;
+import edu.sjsu.LPOS.domain.User;
+import edu.sjsu.LPOS.service.FavoriteService;
 import edu.sjsu.LPOS.service.MenuService;
 import edu.sjsu.LPOS.service.OrderService;
 import edu.sjsu.LPOS.service.RestaurantLocationServiceImpl;
@@ -39,18 +42,13 @@ import edu.sjsu.LPOS.service.TimeSlotService;
 @RestController
 public class ManagementRestController {
 	
-	@Autowired
-	private RestaurantService restaurantService;
-	@Autowired
-	private TimeSlotService timeSlotService;
-	@Autowired
-	private RestaurantLocationServiceImpl restaurantLocationService;
-	@Autowired
-	private MenuService menuService;
-	@Autowired
-	private TableReserveService tableReserveService;
-	@Autowired
-	private OrderService orderService;
+	@Autowired private RestaurantService restaurantService;
+	@Autowired private TimeSlotService timeSlotService;
+	@Autowired private RestaurantLocationServiceImpl restaurantLocationService;
+	@Autowired private MenuService menuService;
+	@Autowired private TableReserveService tableReserveService;
+	@Autowired private OrderService orderService;
+	@Autowired private FavoriteService favoriteService;
 	
 	@RequestMapping(value = "/restaurant", method = RequestMethod.POST) 
 	public ResponseEntity<ResponseDTO> createRestaurant (@RequestBody Restaurant restaurant) {
@@ -99,10 +97,49 @@ public class ManagementRestController {
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 		
 	}
+	
+	@RequestMapping(value = "restaurant/{id}", method=RequestMethod.PUT)
+	public ResponseEntity<ResponseDTO> updateRestaurant(@RequestBody Restaurant restaurant) {
+		ResponseDTO response = new ResponseDTO();
+		if (restaurant == null) {
+			response.setStatus("FAILED");
+			response.setMessage("BAD INPUT, cannot map int A Restaurant object.");
+			return new ResponseEntity<ResponseDTO>(response, HttpStatus.BAD_REQUEST);
+		}
+		Restaurant original = restaurantService.getRestaurantById(restaurant.getId());
+		if (restaurant.getCapacity() != 0) {
+			original.setCapacity(restaurant.getCapacity());
+		}
+		if (restaurant.getDescription() != null) {
+			original.setDescription(restaurant.getDescription());
+		}
+		if (restaurant.getName() != null) {
+			original.setName(restaurant.getName());
+		}
+		if (restaurant.getOpentime() != null) {
+			original.setOpentime(restaurant.getOpentime());
+		}
+		if (restaurant.getMenu() != null) {
+			original.setMenu(restaurant.getMenu());
+		}
+		if (restaurant.getTimeslot() != null) {
+			original.setTimeslot(restaurant.getTimeslot());
+		}
+		try {
+			restaurantService.saveRestaurant(original);
+		} catch(Exception ex) {
+			response.setStatus("FAILED");
+			response.setMessage("An error happend while updating restaurant info, please try again.");
+			return new ResponseEntity<ResponseDTO>(response, HttpStatus.CONFLICT);
+		}
+		response.setStatus("OK");
+		response.setData(original);
+		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+	}
 
 	
 	@RequestMapping(value = "/menu", method = RequestMethod.POST) 
-	public ResponseEntity<ResponseDTO> createRestaurant (@RequestBody CreateMenuDTO createMenuDTO) {
+	public ResponseEntity<ResponseDTO> createMenu (@RequestBody CreateMenuDTO createMenuDTO) {
 		ResponseDTO response = new ResponseDTO();
 		Restaurant r = restaurantService.getRestaurantById(createMenuDTO.getRestaurantId());
 		if( r == null) {
@@ -116,6 +153,94 @@ public class ManagementRestController {
 		response.setData(m);
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/menu", method = RequestMethod.PUT) 
+	public ResponseEntity<ResponseDTO> updateMenu (@RequestBody CreateMenuDTO createMenuDTO) {
+		ResponseDTO response = new ResponseDTO();
+		Restaurant r = restaurantService.getRestaurantById(createMenuDTO.getRestaurantId());
+		if( r == null) {
+			response.setStatus(HttpStatus.NOT_FOUND.name());
+			return new ResponseEntity<ResponseDTO>(response, HttpStatus.NOT_FOUND);
+		}
+		Menu menu = createMenuDTO.getMenu();
+		menu.setRestaurant(r);
+		Menu m = menuService.saveMenu(menu);
+		response.setStatus(HttpStatus.OK.name());
+		response.setData(m);
+		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/menu/{id}", method = RequestMethod.GET) 
+	public ResponseEntity<ResponseDTO> getMenuById (@PathVariable("id") int id) {
+		ResponseDTO response = new ResponseDTO();
+		Menu m = menuService.getMenuById(id);
+		if (m == null) {
+			response.setStatus("NOT_FOUND");
+			response.setData(m);
+			response.setMessage("The menu with id: " + id + " can not be found.");
+			return new ResponseEntity<ResponseDTO>(response, HttpStatus.NOT_FOUND);
+		}
+		response.setStatus(HttpStatus.OK.name());
+		response.setData(m);
+		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/restaurant/id/{id}", method = RequestMethod.GET)
+	public ResponseEntity<ResponseDTO> getRestaurantById(HttpServletRequest request, @PathVariable("id") Integer id) {
+		Restaurant r = restaurantService.getRestaurantById(id);
+		User user = (User) request.getAttribute("user");
+		if (user != null) {
+			Favorite favorite = favoriteService.getFavoriteByUserIdAndRestaurantId(user.getId(), id);
+			if (favorite != null) {
+				r.setIsfavorite(true);
+			}
+		}
+		ResponseDTO response = new ResponseDTO();
+		if (r == null) {
+			response.setStatus(HttpStatus.NOT_FOUND.name());
+			return new ResponseEntity<ResponseDTO>(response, HttpStatus.NOT_FOUND);
+		}
+		r.setTimeSlotsForAPI();
+		response.setData(r);
+		response.setStatus(HttpStatus.OK.name());
+		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/restaurant/name/{likename}", method = RequestMethod.GET)
+	public ResponseEntity<ResponseDTO> getRestaurantByName(HttpServletRequest request, @PathVariable("likename") String name) {
+		List<Restaurant> rs = restaurantService.getRestaurantsContainsName(name);
+
+		ResponseDTO response = new ResponseDTO();
+		if (rs == null) {
+			response.setStatus(HttpStatus.NOT_FOUND.name());
+			return new ResponseEntity<ResponseDTO>(response, HttpStatus.NOT_FOUND);
+		}
+		response.setData(rs);
+		response.setStatus(HttpStatus.OK.name());
+		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/menu/restaurant/{id}", method = RequestMethod.GET) 
+	public ResponseEntity<ResponseDTO> getMenuByRestaurantIdWithPage (@PathVariable("id") int id,
+			@RequestParam("pageNumber") int pageNumber, @RequestParam("menusPerPage") int menusPerPage) {
+		ResponseDTO response = new ResponseDTO();
+		List<Menu> menus = menuService.getMenuByRestaurantId(id);
+		if (menusPerPage == 0) {
+			menusPerPage = 4;
+		}
+		List<Menu> result = new ArrayList<>();
+		if (menus != null && menus.size() != 0) {
+			for (int i = 4*(pageNumber - 1) + 1; i <= 4 * pageNumber && i < menus.size(); i++) {
+				result.add(menus.get(i));
+			}
+		}
+		
+		response.setStatus(HttpStatus.OK.name());
+		response.setData(result);
+		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+	}
+	
+	
 	
 	@RequestMapping(value = "/order/{restaurantId}", method = RequestMethod.GET) 
 	public ResponseEntity<ResponseDTO> getTableReserveInfo ( 

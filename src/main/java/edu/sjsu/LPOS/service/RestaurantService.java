@@ -13,8 +13,7 @@ import edu.sjsu.LPOS.repository.RestaurantRepository;
 
 @Service
 public class RestaurantService {
-	@Autowired
-	private RestaurantRepository restaurantRepository;
+	@Autowired private RestaurantRepository restaurantRepository;
 	
 	public List<Restaurant> getRestaurantByName(String name) {
 		return restaurantRepository.findByName(name);
