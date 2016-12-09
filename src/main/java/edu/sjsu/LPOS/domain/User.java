@@ -1,5 +1,6 @@
 package edu.sjsu.LPOS.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -9,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -43,6 +45,9 @@ public class User {
     private String authorities;
     
     private String address;
+    
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	private List<PaymentInfo> paymentInfo = new ArrayList<>();
     
     public String getAddress() {
 		return address;
@@ -98,6 +103,12 @@ public class User {
 		this.phonenumber = phonenumber;
 	}
 	
+	public List<PaymentInfo> getPaymentInfo() {
+		return paymentInfo;
+	}
+	public void setPaymentInfo(List<PaymentInfo> paymentInfo) {
+		this.paymentInfo = paymentInfo;
+	}
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password=" + password + ", authorities="
