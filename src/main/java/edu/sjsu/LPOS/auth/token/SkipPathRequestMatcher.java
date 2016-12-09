@@ -25,7 +25,7 @@ public class SkipPathRequestMatcher implements RequestMatcher {
 		List<RequestMatcher> requestMatchers = new ArrayList<>();
 		for (String path: pathToSkip) {
 			requestMatchers.add(new AntPathRequestMatcher(path));
-			requestMatchers.add(new RegexRequestMatcher(path + ".*", "GET"));
+			requestMatchers.add(new RegexRequestMatcher(path + ".*", null));
 		}
 		matchers = new OrRequestMatcher(requestMatchers);
 		

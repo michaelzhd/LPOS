@@ -65,6 +65,7 @@
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/domain/SecurityUserDetails.java
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/controller/RestaurantLocationController.java
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/domain/RestaurantLocation.java
+/Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/repository/MenuPageRepository.java
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/util/UserBeanUtil.java
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/auth/token/SkipPathRequestMatcher.java
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/exception/BadUsernamePasswordException.java

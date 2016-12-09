@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,7 @@ import edu.sjsu.LPOS.service.RestaurantService;
 import edu.sjsu.LPOS.service.TableReserveService;
 import edu.sjsu.LPOS.service.TimeSlotService;
 
+@CrossOrigin(origins="*")
 @RequestMapping(value="/management")
 @RestController
 public class ManagementRestController {
@@ -98,7 +100,7 @@ public class ManagementRestController {
 		
 	}
 	
-	@RequestMapping(value = "restaurant/{id}", method=RequestMethod.PUT)
+	@RequestMapping(value = "restaurant/id/{id}", method=RequestMethod.PUT)
 	public ResponseEntity<ResponseDTO> updateRestaurant(@RequestBody Restaurant restaurant) {
 		ResponseDTO response = new ResponseDTO();
 		if (restaurant == null) {
@@ -230,7 +232,7 @@ public class ManagementRestController {
 		}
 		List<Menu> result = new ArrayList<>();
 		if (menus != null && menus.size() != 0) {
-			for (int i = 4*(pageNumber - 1) + 1; i <= 4 * pageNumber && i < menus.size(); i++) {
+			for (int i = menusPerPage * (pageNumber - 1); i < menusPerPage * pageNumber && i < menus.size(); i++) {
 				result.add(menus.get(i));
 			}
 		}

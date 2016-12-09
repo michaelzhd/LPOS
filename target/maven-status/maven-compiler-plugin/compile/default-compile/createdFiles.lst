@@ -78,6 +78,7 @@ edu/sjsu/LPOS/repository/TimeSlotRepository.class
 edu/sjsu/LPOS/beans/ResponseBean.class
 edu/sjsu/LPOS/auth/login/LoginBasicFilter.class
 edu/sjsu/LPOS/service/UserServiceImpl.class
+edu/sjsu/LPOS/repository/MenuPageRepository.class
 edu/sjsu/LPOS/domain/TableReserve.class
 edu/sjsu/LPOS/service/MenuService.class
 edu/sjsu/LPOS/util/HtmlPageComposer.class
