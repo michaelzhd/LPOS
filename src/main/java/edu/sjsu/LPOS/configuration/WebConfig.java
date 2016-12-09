@@ -1,32 +1,26 @@
 package edu.sjsu.LPOS.configuration;
 
-//import org.springframework.boot.context.embedded.FilterRegistrationBean;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.hibernate4.support.OpenSessionInViewFilter;
-import org.springframework.orm.jpa.vendor.HibernateJpaSessionFactoryBean;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan("edu.sjsu")
-public class WebConfig {
-//    @Bean
-//    public FilterRegistrationBean registerOpenSessionInViewFilterBean() {
-//        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
-//        OpenSessionInViewFilter filter = new OpenSessionInViewFilter();
-////        OpenEntityManagerInViewFilter filter = new OpenEntityManagerInViewFilter();
-//        registrationBean.setFilter(filter);
-//        registrationBean.setOrder(5);
-//        return registrationBean;
-//    }
-//    
-//    @Bean
-//    public HibernateJpaSessionFactoryBean sessionFactory() {
-//        return new HibernateJpaSessionFactoryBean();
-//    }
-//    
-//    
+public class WebConfig extends WebMvcConfigurerAdapter{
+	
+	@Value("${spring.corsorigin}")
+	private String origin;
+
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**")
+			.allowedOrigins(origin);
+//			.allowedMethods("GET", "POST", "PUT", "DELETE")
+//			.allowedHeaders("Content-Type", "X-Requested-With", "accept", "Origin", "Access-Control-Request-Method",
+//        	"Access-Control-Request-Headers")
+//			.exposedHeaders("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials")
+//			.allowCredentials(true).maxAge(3600);
+	}
 }
