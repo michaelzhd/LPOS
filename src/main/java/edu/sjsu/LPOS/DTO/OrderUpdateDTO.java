@@ -3,7 +3,7 @@ package edu.sjsu.LPOS.DTO;
 public class OrderUpdateDTO {
 	Integer orderId;
 	String status;
-	Object paymentInfo;
+	Integer paymentId;
 	public Integer getOrderId() {
 		return orderId;
 	}
@@ -16,12 +16,10 @@ public class OrderUpdateDTO {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public Object getPaymentInfo() {
-		return paymentInfo;
+	public Integer getPaymentId() {
+		return paymentId;
 	}
-	public void setPaymentInfo(Object paymentInfo) {
-		this.paymentInfo = paymentInfo;
+	public void setPaymentId(Integer paymentId) {
+		this.paymentId = paymentId;
 	}
-	
-	
 }

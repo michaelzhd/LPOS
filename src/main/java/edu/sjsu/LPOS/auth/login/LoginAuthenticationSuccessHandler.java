@@ -27,6 +27,7 @@ import edu.sjsu.LPOS.beans.Message;
 import edu.sjsu.LPOS.beans.ResponseBean;
 import edu.sjsu.LPOS.beans.UserBean;
 import edu.sjsu.LPOS.domain.User;
+import edu.sjsu.LPOS.service.PaymentInfoService;
 import edu.sjsu.LPOS.service.RedisStoreService;
 import edu.sjsu.LPOS.service.UserService;
 import edu.sjsu.LPOS.util.UserBeanUtil;
@@ -39,7 +40,7 @@ public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessH
 	@Autowired private UserService userService;
 	@Autowired private JwtTokenUtil tokenUtil;
 	@Autowired private ObjectMapper objectMapper;
-	
+	@Autowired private PaymentInfoService paymentService;
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication auth) throws IOException, ServletException {
@@ -55,6 +56,7 @@ public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessH
 			map.put("user", userBean);
 			map.put("accessToken", accessToken);
 			map.put("refreshToken", refreshToken);
+			map.put("paymentInfo", paymentService.getPaymentInfoByUser_Id(user.getId()));
 			
 			HttpSession session = request.getSession(false);
 			if (session != null) {

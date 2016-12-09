@@ -22,7 +22,7 @@ public class PaymentInfo {
 	private String cardHolder;
 	private String address;
 	private String zipcode;
-	
+	private String cvv;
 	@ManyToOne
 	@JoinColumn(name="user_id", referencedColumnName="id", nullable = false, updatable = true, insertable = true)
 	@JsonIgnore
@@ -82,6 +82,14 @@ public class PaymentInfo {
 
 	public void setZipcode(String zipcode) {
 		this.zipcode = zipcode;
+	}
+
+	public String getCvv() {
+		return cvv;
+	}
+
+	public void setCvv(String cvv) {
+		this.cvv = cvv;
 	}
 
 	public User getUser() {
