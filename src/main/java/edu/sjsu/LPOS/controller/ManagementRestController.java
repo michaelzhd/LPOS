@@ -140,7 +140,7 @@ public class ManagementRestController {
 	}
 
 	
-	@RequestMapping(value = "/menu/{restaurantId}", method = RequestMethod.POST) 
+	@RequestMapping(value = "/menu/restaurant/{restaurantId}", method = RequestMethod.POST) 
 	public ResponseEntity<ResponseDTO> createRestaurant (@PathVariable("restaurantId") Integer restaurantId, @RequestBody Menu menu) {
 		ResponseDTO response = new ResponseDTO();
 		Restaurant r = restaurantService.getRestaurantById(restaurantId);
@@ -156,17 +156,32 @@ public class ManagementRestController {
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/menu", method = RequestMethod.PUT) 
-	public ResponseEntity<ResponseDTO> updateMenu (@RequestBody CreateMenuDTO createMenuDTO) {
+	@RequestMapping(value = "/menu/{menuId}", method = RequestMethod.PUT) 
+	public ResponseEntity<ResponseDTO> updateMenu (@PathVariable("menuId") int id, @RequestBody Menu menu) {
 		ResponseDTO response = new ResponseDTO();
-		Restaurant r = restaurantService.getRestaurantById(createMenuDTO.getRestaurantId());
-		if( r == null) {
+		Menu original = menuService.getMenuById(id);
+		if( original == null) {
 			response.setStatus(HttpStatus.NOT_FOUND.name());
 			return new ResponseEntity<ResponseDTO>(response, HttpStatus.NOT_FOUND);
 		}
-		Menu menu = createMenuDTO.getMenu();
-		menu.setRestaurant(r);
-		Menu m = menuService.saveMenu(menu);
+		if (menu.getDescription() != null) {
+			original.setDescription(menu.getDescription());
+		}
+		if (menu.getImage() != null) {
+			original.setImage(menu.getImage());
+		}
+		if (menu.getName() != null) {
+			original.setName(menu.getName());
+		}
+		if (menu.getStatus() != null) {
+			original.setStatus(menu.getStatus());
+		}
+		
+		if (menu.getPrice() != 0.0) {
+			original.setPrice(menu.getPrice());
+		}
+		
+		Menu m = menuService.saveMenu(original);
 		response.setStatus(HttpStatus.OK.name());
 		response.setData(m);
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
@@ -226,6 +241,11 @@ public class ManagementRestController {
 	public ResponseEntity<ResponseDTO> getMenuByRestaurantIdWithPage (@PathVariable("id") int id,
 			@RequestParam("pageNumber") int pageNumber, @RequestParam("menusPerPage") int menusPerPage) {
 		ResponseDTO response = new ResponseDTO();
+		if (pageNumber <= 0) {
+			response.setStatus("NOT_FOUND");
+			response.setMessage("Illegal Pagenumber.");
+			return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+		}
 		List<Menu> menus = menuService.getMenuByRestaurantId(id);
 		if (menusPerPage == 0) {
 			menusPerPage = 4;

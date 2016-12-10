@@ -10,12 +10,18 @@
         </encoder>
     </appender> -->
 
+
     <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
 		<remoteHost>54.218.113.242</remoteHost>
         <port>5000</port>
         <!-- encoder is required -->
         <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
     </appender>
+    
+    <logger name="edu.sjsu.LPOS.controller" level="INFO" additivity="false">
+        <appender-ref ref="logstash"/>
+<!--         <appender-ref ref="FILE"/> -->
+    </logger>
 
     <root level="WARN">
         <appender-ref ref="logstash" />
