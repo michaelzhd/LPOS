@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import edu.sjsu.LPOS.DTO.CreateMenuDTO;
 import edu.sjsu.LPOS.DTO.MenuDTO;
+import edu.sjsu.LPOS.DTO.OrderResponseDTO;
 import edu.sjsu.LPOS.DTO.ReservationResponseDTO;
 import edu.sjsu.LPOS.DTO.ResponseDTO;
 import edu.sjsu.LPOS.domain.Favorite;
@@ -276,7 +277,7 @@ public class ManagementRestController {
 		if(end == null) {
 			end = "9999-99-99";
 		}
-		List<ReservationResponseDTO> reservationResponseDTO = new ArrayList<>();
+		List<OrderResponseDTO> orderResponseDTO = new ArrayList<>();
 		
 		List<TableReserve> tableReserve = tableReserveService.findByRestaurantIdAndDateAndReservation(restaurantId, start, end);
 		System.out.println(tableReserve);
@@ -287,7 +288,7 @@ public class ManagementRestController {
 		}
 		
 		for(TableReserve t: tableReserve) {
-			ReservationResponseDTO r = new ReservationResponseDTO(t.getRestaurant(), t);
+			OrderResponseDTO r = new OrderResponseDTO(t, t.getUser());
 			List<Order> orders = orderService.getMenuListByReservationId(t.getId());
 			List<MenuDTO> menus = new ArrayList<>();
 			for(Order o : orders) {
@@ -296,10 +297,10 @@ public class ManagementRestController {
 				menus.add(menuDTO);
 			}
 			r.setMenus(menus);
-			reservationResponseDTO.add(r);
+			orderResponseDTO.add(r);
 		}
 			
-		response.setData(reservationResponseDTO);
+		response.setData(orderResponseDTO);
 		response.setStatus(HttpStatus.OK.name());
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 	}
