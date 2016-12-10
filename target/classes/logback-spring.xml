@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+<!--     <appender name="FILE" class="ch.qos.logback.core.ConsoleAppender">
+        encoders are  by default assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender> -->
+
+    <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+		<remoteHost>54.218.113.242</remoteHost>
+        <port>5000</port>
+        <!-- encoder is required -->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="logstash" />
+       <!--  <appender-ref ref="FILE" /> -->
+    </root>
+
+    <jmxConfigurator/>
+</configuration>
+
+<!-- <?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.log}"/>
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+    <root level="INFO">
+        <appender-ref ref="FILE" />
+    </root>
+</configuration> -->
