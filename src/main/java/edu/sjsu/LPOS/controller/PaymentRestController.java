@@ -52,8 +52,9 @@ public class PaymentRestController {
 		//Restaurant customer = entityManager.getReference(Restaurant.class, menu.getRestaurantId());
 		paymentInfo.setUser(user);
 		paymentService.savePaymentInfo(paymentInfo);
+		List<PaymentInfo> result = paymentService.getPaymentInfoByUser_Id(user.getId());
 		response.setStatus(HttpStatus.OK.name());
-		response.setData(paymentInfo);
+		response.setData(result);
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 	}
 	
@@ -80,12 +81,15 @@ public class PaymentRestController {
 	
 	@RequestMapping(value = "/{paymentId}", method = RequestMethod.DELETE) 
 	public ResponseEntity<ResponseDTO> deletePaymentInfo (
+			HttpServletRequest request,
 			@PathVariable("paymentId") Integer id) {
 		ResponseDTO response = new ResponseDTO();
-
+		User u = (User) request.getAttribute("user");
 		paymentService.deletePaymentInfo(id);
+		List<PaymentInfo> result = paymentService.getPaymentInfoByUser_Id(u.getId());
 		response.setStatus(HttpStatus.OK.name());
-		response.setData("");
+		response.setData(result);
+
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 	}
 }
