@@ -17,7 +17,7 @@
         <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
     </appender>
 
-    <root level="INFO">
+    <root level="WARN">
         <appender-ref ref="logstash" />
        <!--  <appender-ref ref="FILE" /> -->
     </root>

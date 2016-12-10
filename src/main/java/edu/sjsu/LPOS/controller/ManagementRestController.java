@@ -140,22 +140,22 @@ public class ManagementRestController {
 	}
 
 	
-	@RequestMapping(value = "/menu", method = RequestMethod.POST) 
-	public ResponseEntity<ResponseDTO> createMenu (@RequestBody CreateMenuDTO createMenuDTO) {
+	@RequestMapping(value = "/menu/{restaurantId}", method = RequestMethod.POST) 
+	public ResponseEntity<ResponseDTO> createRestaurant (@PathVariable("restaurantId") Integer restaurantId, @RequestBody Menu menu) {
 		ResponseDTO response = new ResponseDTO();
-		Restaurant r = restaurantService.getRestaurantById(createMenuDTO.getRestaurantId());
+		Restaurant r = restaurantService.getRestaurantById(restaurantId);
 		if( r == null) {
 			response.setStatus(HttpStatus.NOT_FOUND.name());
 			return new ResponseEntity<ResponseDTO>(response, HttpStatus.NOT_FOUND);
 		}
-		Menu menu = createMenuDTO.getMenu();
+		//Restaurant customer = entityManager.getReference(Restaurant.class, menu.getRestaurantId());
 		menu.setRestaurant(r);
 		Menu m = menuService.saveMenu(menu);
 		response.setStatus(HttpStatus.OK.name());
 		response.setData(m);
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(value = "/menu", method = RequestMethod.PUT) 
 	public ResponseEntity<ResponseDTO> updateMenu (@RequestBody CreateMenuDTO createMenuDTO) {
 		ResponseDTO response = new ResponseDTO();
