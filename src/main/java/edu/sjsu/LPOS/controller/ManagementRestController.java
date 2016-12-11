@@ -18,10 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import edu.sjsu.LPOS.DTO.CreateMenuDTO;
 import edu.sjsu.LPOS.DTO.MenuDTO;
 import edu.sjsu.LPOS.DTO.OrderResponseDTO;
-import edu.sjsu.LPOS.DTO.ReservationResponseDTO;
+import edu.sjsu.LPOS.DTO.OrderStatus;
 import edu.sjsu.LPOS.DTO.ResponseDTO;
 import edu.sjsu.LPOS.domain.Favorite;
 import edu.sjsu.LPOS.domain.Location;
@@ -240,20 +239,26 @@ public class ManagementRestController {
 	
 	@RequestMapping(value = "/menu/restaurant/{id}", method = RequestMethod.GET) 
 	public ResponseEntity<ResponseDTO> getMenuByRestaurantIdWithPage (@PathVariable("id") int id,
-			@RequestParam("pageNumber") int pageNumber, @RequestParam("menusPerPage") int menusPerPage) {
+			@RequestParam(value="pageNumber", required=false) Integer pageNumber, 
+			@RequestParam(value="menusPerPage", required=false) Integer pageSize) {
 		ResponseDTO response = new ResponseDTO();
-		if (pageNumber <= 0) {
+		if (pageSize != null && pageNumber <= 0) {
 			response.setStatus("NOT_FOUND");
 			response.setMessage("Illegal Pagenumber.");
 			return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 		}
 		List<Menu> menus = menuService.getMenuByRestaurantId(id);
-		if (menusPerPage == 0) {
-			menusPerPage = 4;
+		if (pageNumber == null) {
+			response.setStatus(HttpStatus.OK.name());
+			response.setData(menus);
+			return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+		}
+		if (pageSize == null || pageSize == 0) {
+			pageSize = 4;
 		}
 		List<Menu> result = new ArrayList<>();
 		if (menus != null && menus.size() != 0) {
-			for (int i = menusPerPage * (pageNumber - 1); i < menusPerPage * pageNumber && i < menus.size(); i++) {
+			for (int i = pageSize * (pageNumber - 1); i < pageSize * pageNumber && i < menus.size(); i++) {
 				result.add(menus.get(i));
 			}
 		}
@@ -263,13 +268,32 @@ public class ManagementRestController {
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 	}
 	
+	@RequestMapping(value= "/order/{reserveId}", method = RequestMethod.PUT)
+	public ResponseEntity<ResponseDTO> updateOrder(@RequestBody OrderStatus orderStatus, 
+			@PathVariable(value="reserveId") int reserveId) {
+		ResponseDTO response = new ResponseDTO();
+		if (orderStatus == null) {
+			response.setStatus("Failed");
+			response.setMessage("Illegal input for OrderStatus");
+			return new ResponseEntity<ResponseDTO>(response, HttpStatus.BAD_REQUEST);
+		}
+		TableReserve tableReserveOriginal = tableReserveService.getReserveById(reserveId);
+		tableReserveOriginal.setStatus(orderStatus.getStatus());
+		tableReserveService.createReserve(tableReserveOriginal);
+//		TableReserve savedTableReserve = tableReserveService.getReserveById(tableReserveOriginal.getId());
+		response.setStatus(HttpStatus.OK.name());
+//		response.setData(savedTableReserve);
+		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+	}
 	
 	
-	@RequestMapping(value = "/order/{restaurantId}", method = RequestMethod.GET) 
+	@RequestMapping(value = "/order/restaurant/{restaurantId}", method = RequestMethod.GET) 
 	public ResponseEntity<ResponseDTO> getTableReserveInfo ( 
 			@PathVariable("restaurantId") Integer restaurantId,
 			@RequestParam(value="start", required=false) String start, 
-			@RequestParam(value="end", required=false) String end) {
+			@RequestParam(value="end", required=false) String end,
+			@RequestParam(value="pageNumber", required=false) Integer pageNumber,
+			@RequestParam(value="pageSize", required=false) Integer pageSize) {
 		ResponseDTO response = new ResponseDTO();
 		if(start == null) {
 			start = "0";
@@ -277,7 +301,7 @@ public class ManagementRestController {
 		if(end == null) {
 			end = "9999-99-99";
 		}
-		List<OrderResponseDTO> orderResponseDTO = new ArrayList<>();
+		List<OrderResponseDTO> allOrderResponseDTOs = new ArrayList<>();
 		
 		List<TableReserve> tableReserve = tableReserveService.findByRestaurantIdAndDateAndReservation(restaurantId, start, end);
 		System.out.println(tableReserve);
@@ -287,20 +311,32 @@ public class ManagementRestController {
 			return new ResponseEntity<ResponseDTO>(response, HttpStatus.NOT_FOUND);
 		}
 		
+		if (pageSize == null || pageSize <= 0) {
+			pageSize = 8;
+		}
 		for(TableReserve t: tableReserve) {
 			OrderResponseDTO r = new OrderResponseDTO(t, t.getUser());
 			List<Order> orders = orderService.getMenuListByReservationId(t.getId());
 			List<MenuDTO> menus = new ArrayList<>();
-			for(Order o : orders) {
+			for(Order o: orders) {
 				Menu m = menuService.getMenuById(o.getMenuId());
 				MenuDTO menuDTO = new MenuDTO(m, o.getQuatity());
 				menus.add(menuDTO);
 			}
 			r.setMenus(menus);
-			orderResponseDTO.add(r);
+			allOrderResponseDTOs.add(r);
+		}
+		if (pageNumber == null || pageNumber == 0) {
+			response.setData(allOrderResponseDTOs);
+			response.setStatus(HttpStatus.OK.name());
+			return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+		}
+		List<OrderResponseDTO> orderResponseDTOs = new ArrayList<>();
+		for(int i = pageSize * (pageNumber - 1); i < pageSize * pageNumber && i < allOrderResponseDTOs.size(); i++) {
+			orderResponseDTOs.add(allOrderResponseDTOs.get(i));
 		}
 			
-		response.setData(orderResponseDTO);
+		response.setData(orderResponseDTOs);
 		response.setStatus(HttpStatus.OK.name());
 		return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 	}

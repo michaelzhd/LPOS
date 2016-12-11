@@ -17,6 +17,10 @@ public class OrderService {
 		return orderRepository.findByTableReserveId(id);
 	}
 	
+	public Order getOrderById(Integer id) {
+		return orderRepository.findById(id);
+	}
+	
 	public Order getOrderByReservationIdAndMenuId(Integer reservationId, Integer menuId) {
 		return orderRepository.findByTableReserveIdAndMenuId(reservationId, menuId);
 	}

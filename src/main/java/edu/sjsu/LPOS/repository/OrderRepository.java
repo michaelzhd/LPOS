@@ -10,4 +10,6 @@ public interface OrderRepository extends CrudRepository<Order, Integer>{
 	List<Order> findByTableReserveId(Integer id);
 	
 	Order findByTableReserveIdAndMenuId(Integer reservationId, Integer menuId);
+	
+	Order findById(Integer id);
 }

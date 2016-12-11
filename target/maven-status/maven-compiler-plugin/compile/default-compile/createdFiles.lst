@@ -27,6 +27,7 @@ edu/sjsu/LPOS/service/TableReserveService.class
 edu/sjsu/LPOS/DTO/ReservationDTO.class
 edu/sjsu/LPOS/service/TableInfoService.class
 edu/sjsu/LPOS/auth/TokenAuthenticationService.class
+edu/sjsu/LPOS/DTO/OrderResponseDTO.class
 edu/sjsu/LPOS/exception/NotVerifiedException.class
 edu/sjsu/LPOS/DTO/OrderMenuDTO.class
 edu/sjsu/LPOS/configuration/WebConfig.class
@@ -59,6 +60,7 @@ edu/sjsu/LPOS/controller/RestaurantRestController.class
 edu/sjsu/LPOS/configuration/RedisConfig.class
 edu/sjsu/LPOS/controller/OrderRestController.class
 edu/sjsu/LPOS/service/CustomUserDetailsService.class
+edu/sjsu/LPOS/DTO/OrderStatus.class
 edu/sjsu/LPOS/auth/RestAuthenticationEntryPoint.class
 edu/sjsu/LPOS/auth/login/InterceptPathRequestMatcher.class
 edu/sjsu/LPOS/repository/RestaurantRepository.class

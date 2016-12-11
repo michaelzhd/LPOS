@@ -12,6 +12,7 @@
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/domain/ChatTopic.java
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/domain/PaymentInfo.java
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/configuration/WebSecurityConfig.java
+/Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/DTO/OrderResponseDTO.java
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/configuration/WebConfig.java
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/domain/Location.java
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/service/RestaurantService.java
@@ -69,6 +70,7 @@
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/util/UserBeanUtil.java
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/auth/token/SkipPathRequestMatcher.java
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/exception/BadUsernamePasswordException.java
+/Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/DTO/OrderStatus.java
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/service/RestaurantLocationService.java
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/controller/OrderRestController.java
 /Users/Michaelzhd/OneDrive/LPOS/src/main/java/edu/sjsu/LPOS/configuration/RedisConfig.java
