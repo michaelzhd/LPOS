@@ -1,0 +1,30 @@
+##android mobile client UI screenshots
+![](./screenshots/mobile_client_picture1.png)
+![](./screenshots/mobile_client_picture2.png)
+![](./screenshots/mobile_client_picture3.png)
+![](./screenshots/mobile_client_picture4.png)
+
+![](./screenshots/mobile_client_picture5.png)
+![](./screenshots/mobile_client_picture6.png)
+![](./screenshots/mobile_client_picture7.png)
+
+![](./screenshots/mobile_client_picture8.png)
+![](./screenshots/mobile_client_picture9.png)
+![](./screenshots/mobile_client_picture10.png)
+![](./screenshots/mobile_client_picture11.png)
+![](./screenshots/mobile_client_picture12.png)
+![](./screenshots/mobile_client_picture13.png)
+![](./screenshots/mobile_client_picture14.png)
+
+##web client UI (Angular2) screenshots
+![](./screenshots/web_client_picture1.png)
+![](./screenshots/web_client_picture2.png)
+![](./screenshots/web_client_picture3.png)
+![](./screenshots/web_client_picture4.png)
+![](./screenshots/web_client_picture5.png)
+![](./screenshots/web_client_picture6.png)
+![](./screenshots/web_client_picture7.png)
+![](./screenshots/web_client_picture8.png)
+![](./screenshots/web_client_picture9.png)
+![](./screenshots/web_client_picture10.png)
+![](./screenshots/web_client_picture11.png)
