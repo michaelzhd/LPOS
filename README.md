@@ -1,5 +1,5 @@
 ##android mobile client UI screenshots
-<div style="float:left; width:250" markdown="1">
+<div style="float:left; width:250px" markdown="1">
 ![mobileclient](./screenshots/mobile_client_picture1.png)
 ![mobileclient](./screenshots/mobile_client_picture2.png)
 ![mobileclient](./screenshots/mobile_client_picture3.png)
@@ -16,6 +16,7 @@
 ![mobileclient](./screenshots/mobile_client_picture12.png)
 ![mobileclient](./screenshots/mobile_client_picture13.png)
 ![mobileclient](./screenshots/mobile_client_picture14.png)
+</div>
 
 ##web client UI (Angular2) screenshots
 ![](./screenshots/web_client_picture1.png)
